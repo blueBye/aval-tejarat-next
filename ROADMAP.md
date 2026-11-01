@@ -39,7 +39,7 @@
 - [x] Highlight only Iran using real GeoJSON coordinates
 - [x] Render animated international links with airplane-shaped moving markers
 - [x] Keep Earth texture local; no runtime mapping service or database
-- [x] Support auto-rotation, drag interaction, and reduced-motion settings
+- [x] Support automatic rotation without pointer dragging, and reduced-motion settings
 - [x] Add source/data regression checks
 - [ ] Verify a full `pnpm run build` after installing new packages in a network-enabled environment
 - [ ] Visually validate interactive WebGL behavior on desktop and mobile
@@ -52,5 +52,15 @@
 - [x] Replace food/industrial sector cards with natural stone, travertine, marble and granite.
 - [x] Keep previous journal/insights URLs redirected to the new Blog paths.
 - [x] Preserve client-side WhatsApp inquiries; no database.
-- [x] Content checks, 22 regression tests and TSX syntax checks.
+- [x] Content checks, 25 regression tests and TSX syntax checks.
 - [ ] Verify `pnpm run build` in a dependency-installed environment.
+
+## Cloudflare Pages release setup (Nov 1, 2026)
+
+- [x] Use Cloudflare **Pages** Git integration, not Workers Builds or a Node container.
+- [x] Keep `next.config.ts` static export, `out/`, `trailingSlash`.
+- [x] Build automatically validates generated localized routes, metadata, redirects, and font assets.
+- [x] Include both supplied font binaries in the private full-project ZIP.
+- [x] Document GitHub push, Pages settings, build-time variables and custom domain.
+- [ ] Run complete Next.js build in a network-enabled environment (npm registry unavailable here).
+- [ ] Verify first Pages build and actual deployed `pages.dev` routes.

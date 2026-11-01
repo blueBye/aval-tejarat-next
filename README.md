@@ -8,7 +8,7 @@ A static, multilingual natural-stone sourcing and export website. Built without 
 
 ## Quick start
 
-Requirements: Node.js 22 recommended, npm, Git.
+Requirements: Node.js 22, npm or pnpm, Git.
 
 ```bash
 npm install
@@ -99,7 +99,7 @@ If `NEXT_PUBLIC_WHATSAPP_NUMBER` is blank, the send button is disabled and a con
 1. Push the source to a new GitHub repository (see commands below).
 2. In Cloudflare Dashboard: **Workers & Pages → Create application → Pages → Import existing Git repository**.
 3. Select the GitHub repository, production branch `main`.
-4. Choose framework preset **Next.js (Static HTML Export)**. Set:
+4. Choose framework preset **Next.js (Static HTML Export)**. Follow `DEPLOY_CLOUDFLARE_PAGES.md` for complete setup. Set:
 
    | Setting | Value |
    |---|---|
@@ -108,6 +108,7 @@ If `NEXT_PUBLIC_WHATSAPP_NUMBER` is blank, the send button is disabled and a con
    | Build output directory | `out` |
    | Node.js version | `22` (set `NODE_VERSION=22` when needed) |
    | Environment variables | `NEXT_PUBLIC_WHATSAPP_NUMBER`, `NEXT_PUBLIC_SITE_URL` |
+   | Deploy / start command | **None — Pages publishes `out/` automatically** |
 
 5. Deploy. Cloudflare gives a `*.pages.dev` preview URL. Add `avaltejaratpersian.com` in **Custom domains** after validating the preview and DNS settings.
 6. Future pushes to `main` automatically rebuild and deploy. Pull requests receive preview builds when enabled.
@@ -141,8 +142,7 @@ or `/sitemap.xml` even after successful compilation and TypeScript checking.
 pnpm run build
 ```
 
-For Cloudflare Pages, deploy only after `out/robots.txt` and `out/sitemap.xml`
-have been generated successfully.
+The build now validates the Pages output automatically, including `out/robots.txt`, `out/sitemap.xml`, localized pages and both fonts.
 
 ## Architecture
 
@@ -174,7 +174,7 @@ To customize destinations, edit the `flights` array in `src/components/trade-glo
 - English display titles: classical serif fallbacks (Georgia / Palatino / Iowan Old Style).
 - The font stacks and local `@font-face` declarations live in `src/app/globals.css`, with heading rules in `src/app/globe.css`. `scripts/sync-fonts.mjs` copies locally supplied files from `src/app/fonts/` to `public/fonts/` before development and production builds.
 
-**Keep your original font files in `src/app/fonts/`.** Project archives exclude the third-party font binaries. Place `Miremad.ttf` and `Dirooz.ttf` in that folder to activate the brand fonts; a fresh checkout can still build with fallback fonts.
+**The complete project ZIP provided here contains both of your supplied font files** in `src/app/fonts/`. Keep them in your private Git repository if the licenses allow it; the build also copies them to `public/fonts/`.
 
 ### Local verification
 
@@ -192,7 +192,7 @@ The new `three` and `three-globe` dependencies will download during `pnpm instal
 The globe component lives in `src/components/trade-globe.tsx`.
 It currently uses seven illustrative long-haul routes with 5.4-second flight cycles, camera-facing plane icons, and 50% faster automatic rotation than the previous revision. The airplane and the leading endpoint of its golden arc share the same interpolated position; globe interaction stays disabled. The lower hemisphere gradient fade is controlled by `src/app/globe.css`.
 
-The website relies on the original local display fonts at `src/app/fonts/Miremad.ttf` and `src/app/fonts/Dirooz.ttf`. When replacing the source tree, **retain your existing `src/app/fonts/` directory**. Do not delete or rename these local files.
+Both original font files are included in this complete project and required by the static-export verification. When updating the source tree, preserve `src/app/fonts/` and commit both files to your private repository if the licenses allow.
 
 ## Stone blog and photographs
 

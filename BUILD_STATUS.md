@@ -1,15 +1,27 @@
-# Verification status — stone-only Blog revision
+# Build and release verification — Cloudflare Pages edition
 
-- New public route: `/en/blog/`, `/fa/blog/`, `/ar/blog/`. Old `insights` and `journal` URLs redirect on Cloudflare Pages.
-- Business catalogue: natural stone, travertine, marble, granite only.
-- Published articles: 18 Markdown posts, 6 per language, all about natural stone.
-- Automated tests: **22 passed** (`node --test tests/*.test.mjs`).
-- Content validator: **18 files passed** (`node scripts/check-content.mjs`).
-- TypeScript / TSX syntax transpilation: **30 files, 0 parser diagnostics** (global TypeScript).
-- Full Next.js production build: **NOT VERIFIED**. Attempted `npm run build`; dependency installation timed out and `next` is not available in this environment (`sh: next: not found`). Syntax tests are not a substitute for `next build`.
-- Font binaries: preserved in the working folder but excluded from the deliverable; the app supports optional local fonts copied by `scripts/sync-fonts.mjs`, with fallback fonts if absent.
+## Current scope
 
-Run on your machine after installing dependencies:
+- Static Next.js App Router export (`output: 'export'`, `trailingSlash: true`) for Cloudflare **Pages** Git integration.
+- No Cloudflare Worker runtime, Wrangler deployment command, vinext, separate Node server, API database, or server process.
+- Source content: 18 Markdown articles across Persian, Arabic and English, all stone-related.
+- Both owner-provided fonts (`Miremad.ttf`, `Dirooz.ttf`) are INCLUDED in `src/app/fonts/` and `public/fonts/` in the delivered full project.
+
+## Verified here
+
+- Automated tests: **25 passed** using `node --test tests/*.test.mjs`.
+- Markdown validation: **18 articles passed** using `node scripts/check-content.mjs`.
+- Font synchronization: **both fonts copied and checked**, no missing files.
+- Static-export verification script added; it runs after `next build` and fails if any required exported routes or assets are missing.
+- Code and metadata configuration inspected for the Pages build path.
+
+## Not verified here
+
+- **Full Next.js production build: NOT VERIFIED.** `npm run build` was attempted. It performed font sync and Markdown validation, then stopped at `next: not found` because dependencies are not installed. Npm registry connectivity test returned `EAI_AGAIN` (DNS failure). This is not a compiled build, and the project must not be treated as production verified.
+- Cloudflare's remote Git deployment is not started and its build logs have not been observed.
+- WebGL visual appearance and contact handoff require browser checks after deployment.
+
+## Verify in a network-enabled environment
 
 ```powershell
 pnpm install
@@ -17,4 +29,4 @@ pnpm test
 pnpm run build
 ```
 
-The package should not be considered a build-verified release until `pnpm run build` completes.
+After build succeeds, `out/` will contain all localized pages, redirects, headers, sitemap, robots and fonts. Upload this repository to GitHub, create a **Cloudflare Pages** Git project, set build command `npm run build`, output directory `out`, and configure the real WhatsApp number. See `DEPLOY_CLOUDFLARE_PAGES.md`.
