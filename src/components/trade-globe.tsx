@@ -3,32 +3,35 @@
 import { useEffect, useRef, useState } from "react";
 import iran from "@/data/iran-border.json";
 
-type Flight = {
-  name: string;
-  startLat: number;
-  startLng: number;
+type Route = {
+  originLat: number;
+  originLng: number;
   endLat: number;
   endLng: number;
-  duration: number;
-  delay: number;
+  phase: number;
 };
 
-// Routes illustrate international trade connections, not tracked shipments.
-const flights: Flight[] = [
-  { name: "Dubai",    startLat: 35.69, startLng: 51.39, endLat: 25.2,  endLng: 55.27, duration: 7600, delay: 0 },
-  { name: "Istanbul", startLat: 35.69, startLng: 51.39, endLat: 41.01, endLng: 28.98, duration: 9200, delay: 1700 },
-  { name: "Berlin",   startLat: 35.69, startLng: 51.39, endLat: 52.52, endLng: 13.4,  duration: 11200, delay: 3400 },
-  { name: "Mumbai",   startLat: 35.69, startLng: 51.39, endLat: 19.08, endLng: 72.88, duration: 9800, delay: 2300 },
-  { name: "Shanghai", startLat: 35.69, startLng: 51.39, endLat: 31.23, endLng: 121.47,duration: 12800, delay: 4300 },
-  { name: "Moscow",   startLat: 35.69, startLng: 51.39, endLat: 55.75, endLng: 37.62, duration: 9000, delay: 5100 },
+// Illustrative long-haul corridors from seven different Iranian cities.
+// These do not represent actual scheduled flights or confirmed cargo routes.
+const IRAN_CENTER = { lat: 32.2, lng: 53.4 };
+const ROUTES: Route[] = [
+  { originLat: 35.6892, originLng: 51.389, endLat: 51.5072, endLng: -0.1276, phase: 0.00 }, // Tehran → London
+  { originLat: 27.1832, originLng: 56.2666, endLat: 1.3521, endLng: 103.8198, phase: 0.21 }, // Bandar Abbas → Singapore
+  { originLat: 29.5918, originLng: 52.5837, endLat: -1.2864, endLng: 36.8172, phase: 0.43 }, // Shiraz → Nairobi
+  { originLat: 32.6546, originLng: 51.668, endLat: 52.52, endLng: 13.405, phase: 0.64 }, // Isfahan → Berlin
+  { originLat: 36.2605, originLng: 59.6168, endLat: 13.7563, endLng: 100.5018, phase: 0.83 }, // Mashhad → Bangkok
+  { originLat: 38.0962, originLng: 46.2738, endLat: 40.4168, endLng: -3.7038, phase: 0.31 }, // Tabriz → Madrid
+  { originLat: 28.9234, originLng: 50.8203, endLat: 6.9271, endLng: 79.8612, phase: 0.72 }, // Bushehr → Colombo
 ];
+const FLIGHT_DURATION_MS = 5400; // Every complete flight takes 5.4 seconds (under 6s).
+const ROUTE_SEGMENTS = 128;
+const TRAIL_FRACTION = 0.72;
+const ROTATION_RAD_PER_SECOND = 0.012; // 50% faster than the previous 0.008 rad/s.
 
-// Coordinates, texture and the shape of Iran are included in the repository.
-// The globe does not make runtime requests to third-party CDNs or map APIs.
 export function TradeGlobe() {
   const mountRef = useRef<HTMLDivElement>(null);
   const [rendered, setRendered] = useState(false);
-  const [failed, setFailed] = useState(false);
+  
 
   useEffect(() => {
     const host = mountRef.current;
@@ -38,33 +41,33 @@ export function TradeGlobe() {
 
     async function initialize() {
       try {
-        // Import WebGL dependencies only in the browser. Static Next.js export stays supported.
-        const [THREE, { default: ThreeGlobe }, { OrbitControls }] = await Promise.all([
+        const [THREE, { default: ThreeGlobe }] = await Promise.all([
           import("three"),
           import("three-globe"),
-          import("three/addons/controls/OrbitControls.js"),
         ]);
         if (disposed || !host) return;
 
-        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
+        const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
         renderer.setClearColor(0x000000, 0);
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.domElement.setAttribute("aria-hidden", "true");
-        renderer.domElement.style.cssText = "width:100%;height:100%;display:block;touch-action:pan-y";
+        // This is a presentation, not a draggable control. Do not intercept page scrolling.
+        renderer.domElement.style.cssText = "width:100%;height:100%;display:block;pointer-events:none";
         host.appendChild(renderer.domElement);
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(39, 1, 0.1, 1200);
         camera.position.set(0, 0, 330);
+        camera.lookAt(0, 0, 0);
 
         const globe = new ThreeGlobe({ animateIn: false, waitForGlobeReady: false })
           .globeImageUrl("/images/globe-earth-dark.png")
           .showGraticules(true)
           .showAtmosphere(true)
           .atmosphereColor("#79afaf")
-          .atmosphereAltitude(0.16)
+          .atmosphereAltitude(0.15)
           .polygonsData([iran])
           .polygonGeoJsonGeometry("geometry")
           .polygonCapColor(() => "#e2b35e")
@@ -72,109 +75,94 @@ export function TradeGlobe() {
           .polygonStrokeColor(() => "#f5d99c")
           .polygonAltitude(0.012)
           .polygonsTransitionDuration(0)
-          .arcsData(flights)
-          .arcStartLat("startLat")
-          .arcStartLng("startLng")
-          .arcEndLat("endLat")
-          .arcEndLng("endLng")
-          .arcAltitude(0.25)
-          .arcColor(() => ["#f0c675", "#c2e5e6"])
-          .arcStroke(0.44)
-          .arcDashLength(0.24)
-          .arcDashGap(0.82)
-          .arcDashAnimateTime(reduceMotion ? 0 : 5200)
-          .arcsTransitionDuration(0)
-          .pointsData([{ lat: 35.69, lng: 51.39 }])
-          .pointLat("lat")
-          .pointLng("lng")
-          .pointAltitude(0.024)
-          .pointRadius(0.48)
-          .pointColor(() => "#fff3c5");
+          .pointsData([]);
 
-        // Center Iran toward the camera on the first frame.
-        globe.rotation.set(-0.13, -0.9, -0.02);
+        // Orient the CENTER of Iran directly toward the camera; north stays upright.
+        // Derive orientation from three-globe's own geo coordinate system, not Euler guesses.
+        const geoVector = (lat: number, lng: number) => {
+          const { x, y, z } = globe.getCoords(lat, lng, 0);
+          return new THREE.Vector3(x, y, z);
+        };
+        const centerPosition = geoVector(IRAN_CENTER.lat, IRAN_CENTER.lng);
+        const outward = centerPosition.clone().normalize();
+        const north = geoVector(IRAN_CENTER.lat + 0.5, IRAN_CENTER.lng)
+          .sub(centerPosition).projectOnPlane(outward).normalize();
+        const right = new THREE.Vector3().crossVectors(north, outward).normalize();
+        // Geodetic north maps to screen +Y; local vertical axis never tilts.
+        const localOrientation = new THREE.Matrix4().makeBasis(right, north, outward);
+        globe.quaternion.setFromRotationMatrix(localOrientation).invert().normalize();
+        const initialOrientation = globe.quaternion.clone();
         scene.add(globe);
+
         scene.add(new THREE.AmbientLight(0xffffff, 2.2));
         const sunlight = new THREE.DirectionalLight(0xe8d2a8, 2.7);
         sunlight.position.set(-250, 180, 250);
         scene.add(sunlight);
 
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enablePan = false;
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.055;
-        controls.minDistance = 255;
-        controls.maxDistance = 490;
-        controls.rotateSpeed = 0.5;
-        controls.zoomSpeed = 0.65;
-        controls.autoRotate = !reduceMotion;
-        controls.autoRotateSpeed = 0.43;
-
-        // Small airplane-shaped meshes advance along each illustrated arc.
-        // Position is calculated from true spherical coordinates every frame.
-        const planeShape = new THREE.Shape();
-        planeShape.moveTo(0, 5);
-        planeShape.lineTo(0.95, 0.35);
-        planeShape.lineTo(4.25, -1.6);
-        planeShape.lineTo(4.25, -2.7);
-        planeShape.lineTo(0.95, -1.75);
-        planeShape.lineTo(0.95, -4.05);
-        planeShape.lineTo(2.1, -5);
-        planeShape.lineTo(2.1, -5.7);
-        planeShape.lineTo(0, -5.1);
-        planeShape.lineTo(-2.1, -5.7);
-        planeShape.lineTo(-2.1, -5);
-        planeShape.lineTo(-0.95, -4.05);
-        planeShape.lineTo(-0.95, -1.75);
-        planeShape.lineTo(-4.25, -2.7);
-        planeShape.lineTo(-4.25, -1.6);
-        planeShape.lineTo(-0.95, 0.35);
-        planeShape.closePath();
-        const planeGeometry = new THREE.ShapeGeometry(planeShape);
-        const planeMaterial = new THREE.MeshBasicMaterial({ color: 0xffecc8, side: THREE.DoubleSide });
-        const orientation = new THREE.Matrix4();
-        const right = new THREE.Vector3();
-        const forward = new THREE.Vector3();
-        const normal = new THREE.Vector3();
-        const head = new THREE.Vector3();
         const radius = globe.getGlobeRadius();
-        const unitVector = (lat: number, lng: number) => {
-          const pos = globe.getCoords(lat, lng, 0);
-          return new THREE.Vector3(pos.x, pos.y, pos.z).normalize();
-        };
-        // Match three-globe's actual cubic Bezier arc geometry, including
-        // its control-point altitude (1.5 × the configured arcAltitude).
-        const sphericalPoint = (
-          start: InstanceType<typeof THREE.Vector3>,
-          end: InstanceType<typeof THREE.Vector3>,
-          progress: number,
-          altitude: number,
-        ) => {
+        const pointOnArc = (start: InstanceType<typeof THREE.Vector3>, end: InstanceType<typeof THREE.Vector3>, fraction: number) => {
           const angle = Math.acos(THREE.MathUtils.clamp(start.dot(end), -1, 1));
-          const point = start.clone();
+          const direction = start.clone();
           if (angle > 0.00001) {
             const sine = Math.sin(angle);
-            point.multiplyScalar(Math.sin((1 - progress) * angle) / sine)
-              .addScaledVector(end, Math.sin(progress * angle) / sine);
+            direction.multiplyScalar(Math.sin((1 - fraction) * angle) / sine)
+              .addScaledVector(end, Math.sin(fraction * angle) / sine);
           }
-          return point.normalize().multiplyScalar(radius * (1 + altitude));
+          // Long, gently elevated arches. The plane and its trail use identical samples.
+          const altitude = 0.35 * Math.sin(Math.PI * fraction);
+          return direction.normalize().multiplyScalar(radius * (1 + altitude));
         };
-        const positions = flights.map(flight => {
-          const mesh = new THREE.Mesh(planeGeometry, planeMaterial);
-          mesh.scale.setScalar(0.52);
-          const object = new THREE.Group();
-          object.add(mesh);
-          globe.add(object);
-          const start = unitVector(flight.startLat, flight.startLng);
-          const end = unitVector(flight.endLat, flight.endLng);
-          const curve = new THREE.CubicBezierCurve3(
-            start.clone().multiplyScalar(radius),
-            sphericalPoint(start, end, 0.25, 0.375),
-            sphericalPoint(start, end, 0.75, 0.375),
-            end.clone().multiplyScalar(radius),
-          );
-          return { flight, object, curve };
+
+        const activeMaterial = new THREE.LineBasicMaterial({ color: 0xf3cc7e, transparent: true, opacity: 0.95, depthWrite: false });
+        const planeShape = new THREE.Shape();
+        planeShape.moveTo(0, 5);
+        planeShape.lineTo(1, 0.4);
+        planeShape.lineTo(4, -1.5);
+        planeShape.lineTo(4, -2.5);
+        planeShape.lineTo(1, -1.6);
+        planeShape.lineTo(1, -4);
+        planeShape.lineTo(2, -5);
+        planeShape.lineTo(2, -5.5);
+        planeShape.lineTo(0, -4.9);
+        planeShape.lineTo(-2, -5.5);
+        planeShape.lineTo(-2, -5);
+        planeShape.lineTo(-1, -4);
+        planeShape.lineTo(-1, -1.6);
+        planeShape.lineTo(-4, -2.5);
+        planeShape.lineTo(-4, -1.5);
+        planeShape.lineTo(-1, 0.4);
+        planeShape.closePath();
+        const planeGeometry = new THREE.ShapeGeometry(planeShape);
+        const planeMaterial = new THREE.MeshBasicMaterial({ color: 0xffecc8, side: THREE.DoubleSide, depthTest: true });
+        const flightPaths = ROUTES.map(route => {
+          const start = geoVector(route.originLat, route.originLng).normalize();
+          const end = geoVector(route.endLat, route.endLng).normalize();
+          const points = Array.from({ length: ROUTE_SEGMENTS + 1 }, (_, index) =>
+            pointOnArc(start, end, index / ROUTE_SEGMENTS));
+          const geometry = new THREE.BufferGeometry().setFromPoints(points);
+          const position = geometry.getAttribute("position");
+          if (position instanceof THREE.BufferAttribute) {
+            position.setUsage(THREE.DynamicDrawUsage);
+          }
+          const line = new THREE.Line(geometry, activeMaterial);
+          globe.add(line);
+          const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+          planeMesh.scale.setScalar(0.48);
+          const plane = new THREE.Group();
+          plane.add(planeMesh);
+          globe.add(plane);
+          return { route, points, geometry, line, plane, partialIndex: -1 };
         });
+        // A billboard faces the viewer, while its nose follows the *projected*
+        // tangent to the route. This prevents edge-of-globe aircraft looking sideways.
+        const spin = new THREE.Quaternion();
+        const inverseGlobe = new THREE.Quaternion();
+        const planeRoll = new THREE.Quaternion();
+        const planeZ = new THREE.Vector3(0, 0, 1);
+        const worldUp = new THREE.Vector3(0, 1, 0);
+        const tip = new THREE.Vector3();
+        const screenBefore = new THREE.Vector3();
+        const screenAfter = new THREE.Vector3();
 
         let width = 1;
         let height = 1;
@@ -186,53 +174,89 @@ export function TradeGlobe() {
           globe.rendererSize(new THREE.Vector2(width, height));
           camera.aspect = width / height;
           camera.updateProjectionMatrix();
+          camera.updateMatrixWorld(true);
+          // The camera is otherwise stationary, so no per-frame POV recalculation.
+          globe.setPointOfView(camera);
         };
-        const observer = new ResizeObserver(resize);
-        observer.observe(host);
+        const resizeObserver = new ResizeObserver(resize);
+        resizeObserver.observe(host);
         resize();
 
-        const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-        const onMotionChange = () => { controls.autoRotate = !motionQuery.matches; };
-        motionQuery.addEventListener("change", onMotionChange);
         let visible = true;
         const visibilityObserver = new IntersectionObserver(entries => {
           visible = entries[0]?.isIntersecting ?? true;
         }, { threshold: 0.02 });
         visibilityObserver.observe(host);
 
-        const clock = new THREE.Clock();
+        let elapsedMs = 0;
+        let rotationAngle = 0;
+        let previousTime: number | null = null;
         let frame = 0;
-        const tick = () => {
+        const tick = (timestamp: number) => {
           if (disposed) return;
           frame = requestAnimationFrame(tick);
-          if (!visible || document.hidden) { clock.getDelta(); return; }
-          const delta = Math.min(clock.getDelta(), 0.06);
-          controls.update(delta);
-          const now = performance.now();
-          globe.setPointOfView(camera);
-          positions.forEach(({ flight, object, curve }) => {
-            // Reduced-motion users see stationary plane markers and solid routes.
-            const progress = motionQuery.matches ? 0.72 : ((now + flight.delay) % flight.duration) / flight.duration;
-            curve.getPoint(progress, head);
-            curve.getTangent(progress, forward);
-            normal.copy(head).normalize();
-            forward.addScaledVector(normal, -forward.dot(normal)).normalize();
-            right.crossVectors(forward, normal).normalize();
-            orientation.makeBasis(right, forward, normal);
-            object.position.copy(head);
-            object.quaternion.setFromRotationMatrix(orientation);
+          const delta = previousTime === null ? 0 : Math.min(Math.max((timestamp - previousTime) / 1000, 0), 0.12);
+          previousTime = timestamp;
+          if (!visible || document.hidden) return;
+          const reduceMotion = reduceMotionQuery.matches;
+          if (!reduceMotion) {
+            elapsedMs += delta * 1000;
+            rotationAngle = (rotationAngle + delta * ROTATION_RAD_PER_SECOND) % (2 * Math.PI);
+          }
+          // Absolute rotation from the original upright Iran-facing quaternion.
+          // Avoid incremental quaternion drift and the expensive per-frame setPointOfView().
+          spin.setFromAxisAngle(worldUp, rotationAngle);
+          globe.quaternion.copy(spin).multiply(initialOrientation);
+          globe.updateMatrixWorld(true);
+          inverseGlobe.copy(globe.quaternion).invert();
+
+          flightPaths.forEach(flight => {
+            const { route, points, line, plane, geometry } = flight;
+            const phase = reduceMotion ? 0.7 : (elapsedMs / FLIGHT_DURATION_MS + route.phase) % 1;
+            const continuousHead = Math.max(2, Math.min(ROUTE_SEGMENTS - 0.0001, phase * ROUTE_SEGMENTS));
+            const head = Math.floor(continuousHead);
+            const tail = Math.max(0, head - Math.round(ROUTE_SEGMENTS * TRAIL_FRACTION));
+            // Interpolate between samples so planes glide continuously even at 120Hz.
+            tip.copy(points[head]).lerp(points[head + 1], continuousHead - head);
+            const partialIndex = head + 1;
+            const positions = geometry.getAttribute("position") as InstanceType<typeof THREE.BufferAttribute>;
+            if (flight.partialIndex !== -1 && flight.partialIndex !== partialIndex) {
+              const original = points[flight.partialIndex];
+              positions.setXYZ(flight.partialIndex, original.x, original.y, original.z);
+            }
+            positions.setXYZ(partialIndex, tip.x, tip.y, tip.z);
+            positions.needsUpdate = true;
+            flight.partialIndex = partialIndex;
+            // The last vertex is the plane's exact position: no speed/position drift.
+            line.geometry.setDrawRange(tail, head - tail + 2);
+            plane.position.copy(tip);
+
+            // Project points into the camera plane, then point the nose toward
+            // screen-space travel. The mesh remains camera-facing at every longitude.
+            screenBefore.copy(points[Math.max(0, head - 2)])
+              .applyMatrix4(globe.matrixWorld).project(camera);
+            screenAfter.copy(points[Math.min(ROUTE_SEGMENTS, head + 2)])
+              .applyMatrix4(globe.matrixWorld).project(camera);
+            const dx = screenAfter.x - screenBefore.x;
+            const dy = screenAfter.y - screenBefore.y;
+            const heading = Math.atan2(-dx, dy);
+            planeRoll.setFromAxisAngle(planeZ, heading);
+            plane.quaternion.copy(inverseGlobe).multiply(camera.quaternion).multiply(planeRoll);
           });
+
           renderer.render(scene, camera);
         };
         frame = requestAnimationFrame(tick);
-        setRendered(true);
+        if (!disposed) setRendered(true);
         cleanup = () => {
           cancelAnimationFrame(frame);
-          observer.disconnect();
+          resizeObserver.disconnect();
           visibilityObserver.disconnect();
-          motionQuery.removeEventListener("change", onMotionChange);
-          controls.dispose();
-          positions.forEach(({ object }) => globe.remove(object));
+          flightPaths.forEach(({ line, geometry, plane }) => {
+            globe.remove(line, plane);
+            geometry.dispose();
+          });
+          activeMaterial.dispose();
           planeGeometry.dispose();
           planeMaterial.dispose();
           globe._destructor();
@@ -241,7 +265,7 @@ export function TradeGlobe() {
         };
       } catch (error) {
         console.warn("3D globe unavailable, using CSS fallback:", error);
-        if (!disposed) setFailed(true);
+
       }
     }
     void initialize();
@@ -256,9 +280,7 @@ export function TradeGlobe() {
           <div className="trade-globe__fallback-sphere" />
         </div>
       )}
-      <div className="trade-globe__eyebrow" aria-hidden="true"><span /> GLOBAL REACH · IRAN ORIGIN</div>
-      <div className="trade-globe__corner" aria-hidden="true">35.69° N · 51.39° E</div>
-      <div className="trade-globe__caption" aria-hidden="true">{failed ? "Static globe preview" : "Drag to explore · Illustrative routes"}</div>
+
     </div>
   );
 }

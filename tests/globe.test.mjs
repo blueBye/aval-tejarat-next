@@ -19,9 +19,11 @@ test('globe ships with a local texture and no runtime geography services', () =>
   assert.match(source, /three-globe/);
   assert.match(source, /\.globeImageUrl\("\/images\/globe-earth-dark\.png"\)/);
   assert.match(source, /\.polygonsData\(\[iran\]\)/);
-  assert.match(source, /\.arcDashAnimateTime/);
   assert.match(source, /const planeShape = new THREE\.Shape/);
-  assert.match(source, /\.autoRotateSpeed/);
+  assert.match(source, /const geometry = new THREE\.BufferGeometry/);
+  assert.match(source, /line\.geometry\.setDrawRange/);
+  assert.match(source, /globe\.quaternion\.copy\(spin\)\.multiply\(initialOrientation\)/);
+  assert.doesNotMatch(source, /globe\.rotateOnWorldAxis/);
   assert.match(source, /prefers-reduced-motion/);
   assert.ok(readFileSync('public/images/globe-earth-dark.png').length > 10000);
 });
@@ -35,4 +37,70 @@ test('large FA/AR headings consistently use Miremad font', () => {
     assert.ok(css.includes(`html[dir="rtl"] ${selector}`), `Missing Miremad selector: ${selector}`);
   }
   assert.match(css, /font-family:\s*var\(--font-miremad\)/);
+});
+
+// Keep this type-critical call aligned with the three-globe API.
+test('point of view is updated with the camera object', () => {
+  const source = read('src/components/trade-globe.tsx');
+  assert.match(source, /globe\.setPointOfView\(camera\)/);
+  assert.doesNotMatch(source, /globe\.setPointOfView\(camera\.position\)/);
+});
+
+
+test('globe is noninteractive and initially centered on Iran', () => {
+  const source = read('src/components/trade-globe.tsx');
+  assert.doesNotMatch(source, /OrbitControls/);
+  assert.match(source, /pointer-events:none/);
+  assert.match(source, /const IRAN_CENTER/);
+  assert.match(source, /geoVector\(IRAN_CENTER\.lat, IRAN_CENTER\.lng\)/);
+  assert.match(source, /quaternion\.setFromRotationMatrix\(localOrientation\)\.invert\(\)\.normalize\(\)/);
+});
+
+test('simultaneous short flights originate from cities across Iran and each plane stays at its arc head', () => {
+  const source = read('src/components/trade-globe.tsx');
+  assert.match(source, /const FLIGHT_DURATION_MS = 5400/);
+  assert.equal((source.match(/originLat:/g) || []).length, 8, 'Seven Iranian origins plus type');
+  assert.match(source, /flightPaths\.forEach\(flight =>/);
+  assert.match(source, /tip\.copy\(points\[head\]\)\.lerp\(points\[head \+ 1\]/);
+  assert.match(source, /positions\.setXYZ\(partialIndex, tip\.x, tip\.y, tip\.z\)/);
+  assert.match(source, /line\.geometry\.setDrawRange\(tail, head - tail \+ 2\)/);
+  assert.doesNotMatch(source, /arcDashAnimateTime/);
+});
+
+test('no globe labels and a lower-half gradient fade', () => {
+  const css = read('src/app/globe.css');
+  const component = read('src/components/trade-globe.tsx');
+  assert.doesNotMatch(component, /trade-globe__topline|trade-globe__caption|IRAN ORIGIN|GLOBAL REACH|Auto-rotating/);
+  assert.match(css, /mask-image: linear-gradient\(to bottom/);
+});
+
+
+test('routes span longer distances, animation is at most six seconds', () => {
+  const source = read('src/components/trade-globe.tsx');
+  const duration = Number(source.match(/const FLIGHT_DURATION_MS = (\d+)/)?.[1]);
+  assert.ok(duration > 0 && duration <= 6000);
+  const routes = [...source.matchAll(/originLat: ([-\d.]+), originLng: ([-\d.]+), endLat: ([-\d.]+), endLng: ([-\d.]+), phase:/g)];
+  assert.equal(routes.length, 7);
+  for (const route of routes) {
+    const [a, b, c, d] = route.slice(1).map(value => Number(value) * Math.PI / 180);
+    const cosine = Math.sin(a) * Math.sin(c) + Math.cos(a) * Math.cos(c) * Math.cos(d - b);
+    const angularDistance = Math.acos(Math.min(1, Math.max(-1, cosine))) * 180 / Math.PI;
+    assert.ok(angularDistance >= 30, `Expected long-haul arc, got ${angularDistance.toFixed(1)} degrees`);
+  }
+});
+
+test('plane heading tracks screen-space motion instead of rolling over the globe', () => {
+  const source = read('src/components/trade-globe.tsx');
+  assert.match(source, /screenBefore\.copy/);
+  assert.match(source, /screenAfter\.copy/);
+  assert.match(source, /Math\.atan2\(-dx, dy\)/);
+  assert.match(source, /plane\.quaternion\.copy\(inverseGlobe\)\.multiply\(camera\.quaternion\)\.multiply\(planeRoll\)/);
+});
+
+test('50 percent faster smooth rotation does not recalculate stationary camera every frame', () => {
+  const source = read('src/components/trade-globe.tsx');
+  assert.match(source, /const ROTATION_RAD_PER_SECOND = 0\.012/);
+  assert.match(source, /const tick = \(timestamp: number\) =>/);
+  assert.match(source, /globe\.quaternion\.copy\(spin\)\.multiply\(initialOrientation\)/);
+  assert.equal((source.match(/globe\.setPointOfView\(camera\)/g) || []).length, 1);
 });

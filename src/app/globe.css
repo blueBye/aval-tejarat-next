@@ -54,12 +54,12 @@ html[dir="rtl"] .section-title { line-height: 1.55; }
   width: 100%;
   height: 100%;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   isolation: isolate;
   background: radial-gradient(ellipse at 55% 51%, rgba(60, 111, 105, .22), transparent 60%);
-  border-radius: 50% / 26%;
+  border-radius: 0;
 }
-.trade-globe__stage { position: absolute; inset: 0; z-index: 2; }
+.trade-globe__stage { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
 .trade-globe__stage canvas { display: block; width: 100%; height: 100%; }
 .trade-globe__fallback { position: absolute; inset: 0; display: grid; place-items: center; }
 .trade-globe__fallback-sphere {
@@ -72,23 +72,39 @@ html[dir="rtl"] .section-title { line-height: 1.55; }
   box-shadow: inset 16px 8px 30px rgba(196,230,222,.12), inset -38px -16px 60px rgba(0,0,0,.48), 0 0 70px rgba(87,163,151,.2);
   animation: globe-fade-in .5s ease both;
 }
+/* Keep annotations in a full-width safe area instead of the globe silhouette. */
+.trade-globe__topline {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  right: 16px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  pointer-events: none;
+  direction: ltr;
+}
 .trade-globe__eyebrow,
 .trade-globe__corner,
 .trade-globe__caption {
-  position: absolute;
+  position: relative;
   z-index: 3;
   pointer-events: none;
   direction: ltr;
   text-align: left;
-  color: #b8cac2;
-  font-family: var(--font-dirooz), "Segoe UI", sans-serif;
+  color: #cbd9d1;
+  font-family: "Segoe UI", sans-serif;
   font-size: 10px;
-  letter-spacing: .09em;
+  line-height: 1.5;
+  letter-spacing: .055em;
+  white-space: normal;
 }
-.trade-globe__eyebrow { top: 23px; left: 17px; display: flex; align-items: center; gap: 9px; color: #e1c795; }
-.trade-globe__eyebrow span { width: 7px; height: 7px; border-radius: 50%; background: #e4c889; box-shadow: 0 0 0 4px rgba(228,200,137,.18); }
-.trade-globe__corner { top: 23px; right: 17px; }
-.trade-globe__caption { bottom: 21px; left: 17px; font-size: 10px; letter-spacing: .015em; }
+.trade-globe__eyebrow { display: flex; align-items: center; gap: 9px; color: #e1c795; }
+.trade-globe__eyebrow span { width: 7px; height: 7px; flex: 0 0 auto; border-radius: 50%; background: #e4c889; box-shadow: 0 0 0 4px rgba(228,200,137,.18); }
+.trade-globe__caption { position: absolute; bottom: 16px; left: 16px; right: 16px; max-width: calc(100% - 32px); }
 @keyframes globe-fade-in { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
 
 @media (max-width: 950px) {
@@ -100,8 +116,9 @@ html[dir="rtl"] .section-title { line-height: 1.55; }
   .hero-inner { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
   .hero-copy { padding-bottom: 0; }
   .hero-art { height: 350px; max-width: 530px; align-self: center; margin-top: 8px; }
-  .trade-globe__eyebrow { top: 10px; left: 10px; font-size: 9px; }
-  .trade-globe__caption { bottom: 8px; left: 10px; font-size: 9px; }
+  .trade-globe__topline { top: 8px; left: 10px; right: 10px; }
+  .trade-globe__eyebrow { font-size: 9px; }
+  .trade-globe__caption { bottom: 8px; left: 10px; right: 10px; font-size: 9px; }
   html[dir="rtl"] .hero h1 { line-height: 1.65; }
   html[dir="rtl"] .page-hero h1,
   html[dir="rtl"] .sector-detail-inner h1 { line-height: 1.65; }
@@ -109,3 +126,11 @@ html[dir="rtl"] .section-title { line-height: 1.55; }
 @media (prefers-reduced-motion: reduce) {
   .trade-globe__fallback-sphere { animation: none; }
 }
+
+/* No globe labels; a soft vertical transparency mask makes space below the sphere. */
+.trade-globe__stage,
+.trade-globe__fallback {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 39%, rgba(0,0,0,.82) 54%, rgba(0,0,0,.3) 72%, transparent 95%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 39%, rgba(0,0,0,.82) 54%, rgba(0,0,0,.3) 72%, transparent 95%);
+}
+.trade-globe__topline,.trade-globe__caption,.trade-globe__eyebrow,.trade-globe__corner { display:none!important; }

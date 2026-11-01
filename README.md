@@ -186,3 +186,10 @@ pnpm dev
 ```
 
 The new `three` and `three-globe` dependencies will download during `pnpm install`. Please test the globe with a hardware-accelerated browser on both desktop and mobile; automated tests check the source and the geographic data but do not verify WebGL rendering visually.
+
+### Globe animation settings (Nov 2026)
+
+The globe component lives in `src/components/trade-globe.tsx`.
+It currently uses seven illustrative long-haul routes with 5.4-second flight cycles, camera-facing plane icons, and 50% faster automatic rotation than the previous revision. The airplane and the leading endpoint of its golden arc share the same interpolated position; globe interaction stays disabled. The lower hemisphere gradient fade is controlled by `src/app/globe.css`.
+
+The website relies on the original local display fonts at `src/app/fonts/Miremad.ttf` and `src/app/fonts/Dirooz.ttf`. When replacing the source tree, **retain your existing `src/app/fonts/` directory**. Do not delete or rename these local files.
