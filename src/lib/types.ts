@@ -1,0 +1,15 @@
+export type Locale = 'en' | 'fa' | 'ar';
+export type SectorId = 'natural-stone' | 'food-products' | 'industrial-materials';
+export interface Article {
+  slug: string;
+  language: Locale;
+  translationKey: string;
+  title: string;
+  description: string;
+  date: string;
+  category: string;
+  cover?: string;
+  featured: boolean;
+  body: string;
+  html: string;
+}

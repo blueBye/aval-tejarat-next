@@ -1,0 +1,29 @@
+name: Validate and build
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Content tests
+        run: npm test
+      - name: TypeScript
+        run: npm run typecheck
+      - name: Static production build
+        run: npm run build
+      - name: Verify static export
+        run: |
+          test -f out/index.html
+          test -f out/en/index.html
+          test -f out/fa/index.html
+          test -f out/ar/index.html
+          test -f out/en/journal/sourcing-brief/index.html
+          test -f out/sitemap.xml

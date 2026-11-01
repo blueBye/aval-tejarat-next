@@ -1,0 +1,2 @@
+import type { ReactNode } from "react";
+export function PageIntro({eyebrow,title,text,children}:{eyebrow:string;title:string;text:string;children?:ReactNode}){return <section className="page-hero"><div className="container"><div className="page-hero-content"><div className="section-eyebrow light">{eyebrow}</div><h1>{title}</h1><p>{text}</p>{children}</div><div className="page-hero-mark" aria-hidden="true">A<span>.</span></div></div></section>}
