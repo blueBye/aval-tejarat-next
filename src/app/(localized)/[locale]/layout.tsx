@@ -1,4 +1,5 @@
 import '../../globals.css';
+import '../../globe.css';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';

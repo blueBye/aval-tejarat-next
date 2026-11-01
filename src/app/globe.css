@@ -1,0 +1,111 @@
+/* Unified editorial heading system. Miremad is used on all prominent FA/AR headings. */
+:where(h1, h2, h3) { text-wrap: balance; }
+
+html[dir="rtl"] .hero h1,
+html[dir="rtl"] .page-hero h1,
+html[dir="rtl"] .sector-detail-inner h1,
+html[dir="rtl"] .article-head-inner h1,
+html[dir="rtl"] .section-title,
+html[dir="rtl"] .cta-panel h2,
+html[dir="rtl"] .about-wide h2,
+html[dir="rtl"] .contact-side h2,
+html[dir="rtl"] .philosophy-quote blockquote,
+html[dir="rtl"] .details-checklist h2 {
+  font-family: var(--font-miremad), var(--font-dirooz), serif;
+  letter-spacing: normal;
+  font-weight: 600;
+  line-height: 1.65;
+}
+
+/* On English pages a classical serif is visually closer to Miremad's display character. */
+html[lang="en"] .hero h1,
+html[lang="en"] .page-hero h1,
+html[lang="en"] .sector-detail-inner h1,
+html[lang="en"] .article-head-inner h1,
+html[lang="en"] .section-title,
+html[lang="en"] .cta-panel h2,
+html[lang="en"] .contact-side h2 {
+  font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+}
+
+html[dir="rtl"] .hero h1 { line-height: 1.72; }
+html[dir="rtl"] .page-hero h1,
+html[dir="rtl"] .sector-detail-inner h1 { line-height: 1.6; }
+html[dir="rtl"] .section-title { line-height: 1.55; }
+
+/* Globe is a separate, clipped composition; it cannot render behind the hero text. */
+.hero-inner {
+  grid-template-columns: minmax(0, .99fr) minmax(0, 1.01fr);
+  gap: clamp(12px, 2vw, 28px);
+}
+.hero-copy { min-width: 0; isolation: isolate; }
+.hero-art {
+  height: clamp(445px, 45vw, 630px);
+  width: 100%;
+  max-width: unset;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+.trade-globe {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: radial-gradient(ellipse at 55% 51%, rgba(60, 111, 105, .22), transparent 60%);
+  border-radius: 50% / 26%;
+}
+.trade-globe__stage { position: absolute; inset: 0; z-index: 2; }
+.trade-globe__stage canvas { display: block; width: 100%; height: 100%; }
+.trade-globe__fallback { position: absolute; inset: 0; display: grid; place-items: center; }
+.trade-globe__fallback-sphere {
+  width: min(76%, 455px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, transparent 18%, rgba(0,0,0,.4) 72%, rgba(0,0,0,.9) 100%), url('/images/globe-earth-dark.png');
+  background-size: cover, auto 100%;
+  background-position: center, 63% center;
+  box-shadow: inset 16px 8px 30px rgba(196,230,222,.12), inset -38px -16px 60px rgba(0,0,0,.48), 0 0 70px rgba(87,163,151,.2);
+  animation: globe-fade-in .5s ease both;
+}
+.trade-globe__eyebrow,
+.trade-globe__corner,
+.trade-globe__caption {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  direction: ltr;
+  text-align: left;
+  color: #b8cac2;
+  font-family: var(--font-dirooz), "Segoe UI", sans-serif;
+  font-size: 10px;
+  letter-spacing: .09em;
+}
+.trade-globe__eyebrow { top: 23px; left: 17px; display: flex; align-items: center; gap: 9px; color: #e1c795; }
+.trade-globe__eyebrow span { width: 7px; height: 7px; border-radius: 50%; background: #e4c889; box-shadow: 0 0 0 4px rgba(228,200,137,.18); }
+.trade-globe__corner { top: 23px; right: 17px; }
+.trade-globe__caption { bottom: 21px; left: 17px; font-size: 10px; letter-spacing: .015em; }
+@keyframes globe-fade-in { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
+
+@media (max-width: 950px) {
+  .hero-inner { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+  .hero-art { height: 460px; }
+  .trade-globe__corner { display: none; }
+}
+@media (max-width: 680px) {
+  .hero-inner { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+  .hero-copy { padding-bottom: 0; }
+  .hero-art { height: 350px; max-width: 530px; align-self: center; margin-top: 8px; }
+  .trade-globe__eyebrow { top: 10px; left: 10px; font-size: 9px; }
+  .trade-globe__caption { bottom: 8px; left: 10px; font-size: 9px; }
+  html[dir="rtl"] .hero h1 { line-height: 1.65; }
+  html[dir="rtl"] .page-hero h1,
+  html[dir="rtl"] .sector-detail-inner h1 { line-height: 1.65; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trade-globe__fallback-sphere { animation: none; }
+}

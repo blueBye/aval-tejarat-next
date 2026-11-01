@@ -32,3 +32,14 @@
 - [ ] Article topic filtering
 - [ ] Generated Open Graph thumbnails
 - [ ] Cookie-free analytics (Cloudflare Web Analytics)
+
+## Visual refresh — Globe and typography (Nov 2026)
+- [x] Apply Miremad to every major Persian/Arabic display heading (home, green page heroes, sectors, articles, calls to action)
+- [x] Replace illustrative transport map with a Three.js / three-globe 3D Earth
+- [x] Highlight only Iran using real GeoJSON coordinates
+- [x] Render animated international links with airplane-shaped moving markers
+- [x] Keep Earth texture local; no runtime mapping service or database
+- [x] Support auto-rotation, drag interaction, and reduced-motion settings
+- [x] Add source/data regression checks
+- [ ] Verify a full `pnpm run build` after installing new packages in a network-enabled environment
+- [ ] Visually validate interactive WebGL behavior on desktop and mobile

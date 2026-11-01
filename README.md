@@ -158,3 +158,31 @@ have been generated successfully.
 ## Important editorial notes
 
 Supplier availability, shipment feasibility, legal eligibility, prices, and quality are **not guaranteed**. This positioning matches the existing business site. The six included articles are starter editorial examples; have the business owner review them before publishing under the company name.
+
+## 3D animated globe and display typography
+
+The home page now contains a client-side **three-globe / Three.js** visualization. This keeps the site compatible with `output: 'export'` and Cloudflare Pages (no server runtime, no map API). The local `public/images/globe-earth-dark.png` is a geographic texture generated from the bundled Basemap/Natural Earth outlines. `src/data/iran-border.json` is the simplified GeoJSON boundary for Iran; **only Iran** receives a gold polygon overlay. Other countries remain dark.
+
+Animated arcs are illustrative (not live flights or confirmed routes). The animated airplane silhouettes follow spherical paths above the globe. The globe supports drag to rotate, scroll/pinch zoom, auto-rotation, and reduced-motion preferences. WebGL-unavailable devices see a CSS fallback.
+
+To customize destinations, edit the `flights` array in `src/components/trade-globe.tsx`. All coordinates are decimal latitude/longitude. Additional destinations do not require new database records or API keys.
+
+### Fonts
+
+- Miremad (`src/app/fonts/Miremad.ttf`): homepage display title, sector and green-background page titles, major section headings and selected callouts in Persian and Arabic.
+- Dirooz (`src/app/fonts/Dirooz.ttf`): body copy and interface text.
+- English display titles: classical serif fallbacks (Georgia / Palatino / Iowan Old Style).
+- The font registrations are in `src/app/fonts.ts`, with heading rules in `src/app/globe.css`.
+
+**If you are applying the update ZIP to an existing installation, preserve the two font files already in your `src/app/fonts/` folder.** The update package does not distribute the font binaries; they are loaded from your existing installation.
+
+### Local verification
+
+```powershell
+pnpm install
+pnpm test
+pnpm run build
+pnpm dev
+```
+
+The new `three` and `three-globe` dependencies will download during `pnpm install`. Please test the globe with a hardware-accelerated browser on both desktop and mobile; automated tests check the source and the geographic data but do not verify WebGL rendering visually.

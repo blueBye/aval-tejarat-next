@@ -18,14 +18,17 @@
     "lucide-react": "^0.468.0",
     "gray-matter": "^4.0.3",
     "remark": "^15.0.1",
-    "remark-html": "^16.0.1"
+    "remark-html": "^16.0.1",
+    "three": "^0.187.0",
+    "three-globe": "^2.45.6"
   },
   "devDependencies": {
     "typescript": "^5.9.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
-    "serve": "^14.2.4"
+    "serve": "^14.2.4",
+    "@types/three": "^0.187.0"
   },
   "engines": {
     "node": ">=20.9.0"

@@ -1,30 +1,20 @@
 # Build and QA status — 2026-11-01
 
-## User's Windows test (Next.js 16.4.3)
+## New globe + typography update
 
-- `pnpm i` succeeded; 107 packages installed.
-- `pnpm run build` validated six Markdown posts, compiled successfully, and completed TypeScript.
-- The build then failed collecting `/robots.txt` because Next.js 16 static export requires `dynamic = 'force-static'` for generated metadata routes.
+- `three-globe` and `three` integration implemented in a dynamically loaded client-side component.
+- Uses local static equirectangular Earth texture and a geographic Iran polygon.
+- Airplane-shaped mesh markers animate along spherical paths; globe auto-rotates and supports user controls.
+- `src/app/globe.css` applies Miremad to major RTL page and section titles.
+- Site remains a static Next.js export and uses no database or mapping API.
 
-## Fix included in this revision
+## Local checks
 
-- Added `export const dynamic = 'force-static';` to **both** `src/app/robots.ts` and `src/app/sitemap.ts`.
-- Added a regression test to ensure those declarations remain in both files.
+- The new TSX files were transpile-parse-checked using TypeScript (no syntax diagnostics).
+- Iran GeoJSON polygon was checked with Shapely: valid, closed, bounds inside Iran region, containing Tehran.
+- Dependency-free globe tests and content tests can be run using `node --test tests/globe.test.mjs`.
 
-## Tests completed in this workspace
+## Not verified in this workspace
 
-- `node --test tests/*.test.mjs`: all tests passed (5/5).
-- `node scripts/check-content.mjs`: six Markdown posts validated.
-- Both metadata route files statically inspected for the new export.
-
-## Verification still required
-
-This workspace cannot install the project's Next.js dependencies from the npm registry, so it has **not** run a fresh full production build. On the user's Windows machine:
-
-```powershell
-pnpm run build
-Test-Path .\out\robots.txt
-Test-Path .\out\sitemap.xml
-```
-
-Both `Test-Path` results should be `True`. Uploading to Cloudflare Pages is not done yet.
+- A full Next.js production build and browser-based WebGL visual check require installing the newly added npm packages. npm registry access is unavailable in the current workspace.
+- On Windows: `pnpm install`, then `pnpm test`, then `pnpm run build`. Deployment remains unchanged: Cloudflare Pages publishes `out/`.
