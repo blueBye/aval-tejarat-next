@@ -1,15 +1,30 @@
-# Build and QA status — 2026-10-29
+# Build and QA status — 2026-11-01
 
-## Passed in this workspace
-- `npm test`: 4/4 tests passed.
-- `npm run content:check`: six Markdown posts validated.
-- TypeScript/TSX syntax parser: all project TypeScript/TSX files parsed without syntax errors.
-- Local relative/alias imports checked: no unresolved project-relative imports.
-- Static-only audit: removed DB schema/migrations, API routes and server runtime dependencies.
+## User's Windows test (Next.js 16.4.3)
 
-## Blocked in this workspace
-- `npm install` was unavailable because outbound DNS for `registry.npmjs.org` is blocked.
-- `npm run build` ran content validation and then stopped at `sh: next: not found` because dependencies could not be installed.
-- A real production Next.js build, functional browser verification, and Cloudflare deployment have **not** been completed or claimed.
+- `pnpm i` succeeded; 107 packages installed.
+- `pnpm run build` validated six Markdown posts, compiled successfully, and completed TypeScript.
+- The build then failed collecting `/robots.txt` because Next.js 16 static export requires `dynamic = 'force-static'` for generated metadata routes.
 
-Run `npm install && npm test && npm run typecheck && npm run build` on a machine with npm registry access. The GitHub Actions workflow automatically performs these checks on push/PR after you publish the repository.
+## Fix included in this revision
+
+- Added `export const dynamic = 'force-static';` to **both** `src/app/robots.ts` and `src/app/sitemap.ts`.
+- Added a regression test to ensure those declarations remain in both files.
+
+## Tests completed in this workspace
+
+- `node --test tests/*.test.mjs`: all tests passed (5/5).
+- `node scripts/check-content.mjs`: six Markdown posts validated.
+- Both metadata route files statically inspected for the new export.
+
+## Verification still required
+
+This workspace cannot install the project's Next.js dependencies from the npm registry, so it has **not** run a fresh full production build. On the user's Windows machine:
+
+```powershell
+pnpm run build
+Test-Path .\out\robots.txt
+Test-Path .\out\sitemap.xml
+```
+
+Both `Test-Path` results should be `True`. Uploading to Cloudflare Pages is not done yet.

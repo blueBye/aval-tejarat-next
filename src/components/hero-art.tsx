@@ -1,9 +1,84 @@
-export function HeroArt(){return <div className="hero-art" aria-hidden="true"><div className="hero-art-grid"/><svg viewBox="0 0 660 640" className="hero-map" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="324" cy="318" r="235" stroke="#97c9b8" strokeOpacity=".16"/><circle cx="324" cy="318" r="182" stroke="#97c9b8" strokeOpacity=".14" strokeDasharray="4 8"/><circle cx="324" cy="318" r="130" stroke="#97c9b8" strokeOpacity=".13"/><circle cx="324" cy="318" r="76" stroke="#97c9b8" strokeOpacity=".12"/>
-<path d="M185 190c40-25 56-15 72-43l30-12 24 17 39-8 41 15 5 28-21 15-20 44-48 4-21 29-18-17-30 6-17-26-44-6-13-30 21-16Z" fill="#8EBEAC" fillOpacity=".17" stroke="#8EBEAC" strokeOpacity=".46"/>
-<path d="M344 275l21-18 25 2 17 18 26 5 10 29-17 17-2 29-23 12-18-18-18 4-17-23-20-4 8-28 8-25Z" fill="#E4C18E" fillOpacity=".25" stroke="#E4C18E" strokeOpacity=".8" strokeWidth="1.5"/>
-<path d="M395 314Q488 237 562 206" stroke="#EBC58A" strokeWidth="2" strokeDasharray="5 7"/><path d="M395 314Q499 397 547 434" stroke="#EBC58A" strokeWidth="2" strokeDasharray="5 7"/><path d="M395 314Q258 397 123 448" stroke="#EBC58A" strokeWidth="2" strokeDasharray="5 7"/>
-<circle cx="395" cy="314" r="29" fill="#EBC58A" fillOpacity=".09"/><circle cx="395" cy="314" r="13" fill="#EBC58A"/><circle cx="395" cy="314" r="5" fill="#112F32"/>
-<circle cx="562" cy="206" r="6" fill="#EBC58A"/><circle cx="547" cy="434" r="6" fill="#EBC58A"/><circle cx="123" cy="448" r="6" fill="#EBC58A"/>
-<path d="M324 50v540M53 318h542" stroke="#A4C5BB" strokeOpacity=".12"/><text x="367" y="287" fill="#EBD3AB" fontSize="12" fontFamily="sans-serif" letterSpacing="3">IRAN</text><text x="474" y="190" fill="#C5D4D0" fontSize="10" fontFamily="sans-serif">GLOBAL MARKETS</text><text x="466" y="457" fill="#C5D4D0" fontSize="10" fontFamily="sans-serif">OPPORTUNITY</text>
-</svg><div className="hero-coordinate top">35° 41′ N / 51° 25′ E</div><div className="hero-coordinate bottom">ORIGIN — IRAN &nbsp;→&nbsp; GLOBAL</div><div className="hero-floating-card"><span className="live-pin"/>A thoughtful route to global trade <span>↗</span></div></div>}
+import { Plane, Ship, Truck, MapPin, Waves, PackageCheck } from "lucide-react";
+
+const badges = [
+  { label: "Air", icon: Plane, className: "transport-badge badge-air" },
+  { label: "Sea", icon: Ship, className: "transport-badge badge-sea" },
+  { label: "Road", icon: Truck, className: "transport-badge badge-road" },
+];
+
+export function HeroArt() {
+  return (
+    <div className="hero-art" aria-hidden="true">
+      <div className="hero-art-panel">
+        <div className="hero-art-grid" />
+        <div className="hero-sea sea-caspian" />
+        <div className="hero-sea sea-persian" />
+
+        <svg className="iran-map" viewBox="0 0 600 520" role="presentation">
+          <defs>
+            <linearGradient id="iranFill" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#d8e6da" />
+              <stop offset="100%" stopColor="#aec5b1" />
+            </linearGradient>
+            <linearGradient id="routeStroke" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#f2d8a5" />
+              <stop offset="100%" stopColor="#d0b071" />
+            </linearGradient>
+          </defs>
+          <path
+            className="iran-shape"
+            d="M191 70l47-24 68 7 53 27 54 6 49 45-8 47 21 43-16 53-38 34-24 60-42 28-82 7-62-26-26-43-47-8-55-32-20-53 14-42-18-57 27-37 60-10 45-32z"
+          />
+          <path className="route route-air" d="M208 180 C 255 125, 337 108, 404 130 S 497 191, 523 170" />
+          <path className="route route-road" d="M186 240 C 237 267, 296 290, 350 308 S 463 340, 500 365" />
+          <path className="route route-sea" d="M232 364 C 275 382, 337 392, 404 386 S 490 369, 528 346" />
+        </svg>
+
+        <div className="city-dot dot-tehran"><span />Tehran</div>
+        <div className="city-dot dot-tabriz"><span />Tabriz</div>
+        <div className="city-dot dot-bandar"><span />Bandar Abbas</div>
+        <div className="city-dot dot-bushehr"><span />Bushehr</div>
+        <div className="city-dot dot-mashhad"><span />Mashhad</div>
+
+        <div className="moving-icon moving-plane">
+          <Plane size={18} />
+        </div>
+        <div className="moving-icon moving-truck">
+          <Truck size={18} />
+        </div>
+        <div className="moving-icon moving-ship">
+          <Ship size={18} />
+        </div>
+
+        {badges.map(({ label, icon: Icon, className }) => (
+          <div className={className} key={label}>
+            <Icon size={15} />
+            <span>{label}</span>
+          </div>
+        ))}
+
+        <div className="hero-info-card card-route">
+          <MapPin size={16} />
+          <div>
+            <b>Iran-focused sourcing</b>
+            <span>Routes visualized across land, sea, and air</span>
+          </div>
+        </div>
+        <div className="hero-info-card card-flow">
+          <PackageCheck size={16} />
+          <div>
+            <b>Inquiry → validation → coordination</b>
+            <span>Clearer next steps for buyers</span>
+          </div>
+        </div>
+        <div className="hero-info-card card-sea">
+          <Waves size={16} />
+          <div>
+            <b>Persian Gulf access</b>
+            <span>Sea routes framed from southern ports</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -9,6 +9,7 @@ import { copy } from '@/lib/i18n';
 import { allArticles } from '@/lib/articles';
 import type { Locale } from '@/lib/types';
 import { siteOrigin } from '@/lib/metadata';
+import { dirooz, miremad } from '@/app/fonts';
 
 type Props = { params: Promise<{ locale: string }>; children: ReactNode };
 export const dynamicParams = false;
@@ -32,5 +33,5 @@ export default async function LocaleLayout({ params, children }: Props) {
   for (const article of items){
     switchMap[`${article.language}:${article.slug}`]=Object.fromEntries(items.filter(a=>a.translationKey===article.translationKey).map(a=>[a.language,a.slug]));
   }
-  return <html lang={locale} dir={locale === 'en' ? 'ltr' : 'rtl'}><body><a href="#main-content" className="skip-link">Skip to content</a><noscript><style>{'.reveal{opacity:1!important;transform:none!important}'}</style></noscript><SiteHeader locale={locale} articleSwitchMap={switchMap}/><main id="main-content">{children}</main><SiteFooter locale={locale}/></body></html>;
+  return <html lang={locale} dir={locale === 'en' ? 'ltr' : 'rtl'} className={`${dirooz.variable} ${miremad.variable}`}><body><a href="#main-content" className="skip-link">Skip to content</a><noscript><style>{'.reveal{opacity:1!important;transform:none!important}'}</style></noscript><SiteHeader locale={locale} articleSwitchMap={switchMap}/><main id="main-content">{children}</main><SiteFooter locale={locale}/></body></html>;
 }

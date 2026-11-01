@@ -1,3 +1,4 @@
+// Required for metadata route generation with Next.js static export.
 export const dynamic = 'force-static';
 
 import type { MetadataRoute } from 'next';

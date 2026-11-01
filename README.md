@@ -129,6 +129,21 @@ git push -u origin main
 
 You need to create the target GitHub repository first and have permission to push to it.
 
+## Next.js 16 static export note
+
+With `output: 'export'`, generated metadata routes `src/app/robots.ts` and
+`src/app/sitemap.ts` must include `export const dynamic = 'force-static';`.
+The regression test in `tests/content.test.mjs` checks both files.
+Otherwise `pnpm run build` may fail while collecting data for `/robots.txt`
+or `/sitemap.xml` even after successful compilation and TypeScript checking.
+
+```bash
+pnpm run build
+```
+
+For Cloudflare Pages, deploy only after `out/robots.txt` and `out/sitemap.xml`
+have been generated successfully.
+
 ## Architecture
 
 - `src/app/(localized)/[locale]/` — localized static Next.js pages
