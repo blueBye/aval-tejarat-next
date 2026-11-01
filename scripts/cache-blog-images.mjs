@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const manifest = JSON.parse(await fs.readFile(path.join(root,'content/IMAGE_CREDITS.json'),'utf8'));
-const destination = path.join(root,'public/images/insights');
+const destination = path.join(root,'public/images/blog');
 await fs.mkdir(destination,{recursive:true});
 for (const entry of manifest) {
   const filename = `${entry.topic}.jpg`;
@@ -22,7 +22,7 @@ for (const entry of manifest) {
   const bytes = new Uint8Array(await response.arrayBuffer());
   if (bytes.length < 10000 || bytes.length > 15_000_000) throw new Error(`${entry.topic}: unexpected size ${bytes.length}`);
   await fs.writeFile(dest,bytes);
-  const newCover = `/images/insights/${filename}`;
+  const newCover = `/images/blog/${filename}`;
   for (const lang of ['en','fa','ar']) {
     const p = path.join(root,'content/articles',`${lang}-${entry.topic}.md`);
     const source = await fs.readFile(p,'utf8');
@@ -30,4 +30,4 @@ for (const entry of manifest) {
     await fs.writeFile(p,source.replace(/^cover: .+$/m,`cover: "${newCover}"`));
   }
 }
-console.log('Finished. Commit public/images/insights/ and the updated Markdown files to GitHub.');
+console.log('Finished. Commit public/images/blog/ and the updated Markdown files to GitHub.');

@@ -1,9 +1,9 @@
 # Aval Tejarat Persian — Next.js + Markdown + Cloudflare Pages
 
-A static, multilingual corporate website for an Iranian buyer-led sourcing/export coordination business. Built without a database, hosted server, CMS login, API endpoints, or paid SaaS dependency.
+A static, multilingual natural-stone sourcing and export website. Built without a database, hosted server, CMS login, API endpoints, or paid SaaS dependency.
 
 **Languages:** English (`/en/`), Persian (`/fa/`, RTL), Arabic (`/ar/`, RTL).  
-**Pages:** Home, About, Sectors, Sector details, Process, Journal, Article, Contact.  
+**Pages:** Home, About, Sectors, Sector details, Process, Blog, Article, Contact.  
 **Inquiries:** Visitors fill a sourcing brief and WhatsApp opens with a prefilled message; nothing is stored on this website.
 
 ## Quick start
@@ -36,14 +36,14 @@ Create a Markdown file in `content/articles/` (filename can be anything ending i
 
 ```md
 ---
-title: "Practical questions before sourcing food products"
-description: "A short introduction to evaluating packaged food inquiries."
+title: "Travertine procurement checklist"
+description: "A practical guide to specifying, sampling and inspecting Iranian travertine."
 language: en
-slug: food-sourcing-questions
-translationKey: food-sourcing-questions
+slug: travertine-buyers-checklist
+translationKey: travertine-buyers-checklist
 date: 2026-10-29
-category: Food products
-cover: /illustrations/food.svg
+category: Natural stone
+cover: /illustrations/travertine.svg
 featured: false
 draft: false
 ---
@@ -55,8 +55,8 @@ Write your **Markdown** here.
 ## What to check
 
 - Product specifications
-- Packaging and shelf life
-- Import requirements in the destination country
+- Stone finishing and tolerances
+- Stone samples and inspection
 ```
 
 - `language`: `en`, `fa`, or `ar` (required).
@@ -70,7 +70,7 @@ Write your **Markdown** here.
 
 ### Adding translations
 
-Make two more `.md` files with the **same `translationKey`** and `language: fa` and `language: ar`, with translated title, description and body. You can use the same slug in all languages; the language switch opens the matching translation if available, or returns to the target language's journal index if the article has not been translated. Every new committed article triggers a fresh static build.
+Make two more `.md` files with the **same `translationKey`** and `language: fa` and `language: ar`, with translated title, description and body. You can use the same slug in all languages; the language switch opens the matching translation if available, or returns to the target language's blog index if the article has not been translated. Every new committed article triggers a fresh static build.
 
 ### Publication workflow
 
@@ -90,7 +90,7 @@ NEXT_PUBLIC_WHATSAPP_NUMBER=<REAL_BUSINESS_NUMBER>
 NEXT_PUBLIC_SITE_URL=https://avaltejaratpersian.com
 ```
 
-On the contact page, the required fields are name, product, and destination. Sending prepares a localized message and opens `https://wa.me/<number>?text=<encoded-message>` in a new tab. Optional values are included only when entered. No data is submitted to our servers. A working WhatsApp app/account and browser support are required to complete sending; the visitor must still press Send within WhatsApp.
+On the contact page, the required fields are name, stone type, and destination. Sending prepares a localized message and opens `https://wa.me/<number>?text=<encoded-message>` in a new tab. Optional values are included only when entered. No data is submitted to our servers. A working WhatsApp app/account and browser support are required to complete sending; the visitor must still press Send within WhatsApp.
 
 If `NEXT_PUBLIC_WHATSAPP_NUMBER` is blank, the send button is disabled and a configuration warning is shown. This is intentional — we never send visitors to an invented number. **This variable is compiled into the public JS bundle and must not be secret.** After changing it, trigger a new Cloudflare build.
 
@@ -157,13 +157,13 @@ have been generated successfully.
 
 ## Important editorial notes
 
-Supplier availability, shipment feasibility, legal eligibility, prices, and quality are **not guaranteed**. This positioning matches the existing business site. The six included articles are starter editorial examples; have the business owner review them before publishing under the company name.
+Supplier availability, shipment feasibility, legal eligibility, prices, and quality are **not guaranteed**. This positioning matches the existing business site. The 18 included stone articles are editorial examples; have the business owner review them before publishing under the company name.
 
 ## 3D animated globe and display typography
 
 The home page now contains a client-side **three-globe / Three.js** visualization. This keeps the site compatible with `output: 'export'` and Cloudflare Pages (no server runtime, no map API). The local `public/images/globe-earth-dark.png` is a geographic texture generated from the bundled Basemap/Natural Earth outlines. `src/data/iran-border.json` is the simplified GeoJSON boundary for Iran; **only Iran** receives a gold polygon overlay. Other countries remain dark.
 
-Animated arcs are illustrative (not live flights or confirmed routes). The animated airplane silhouettes follow spherical paths above the globe. The globe supports drag to rotate, scroll/pinch zoom, auto-rotation, and reduced-motion preferences. WebGL-unavailable devices see a CSS fallback.
+Animated arcs are illustrative (not live flights or confirmed routes). The animated airplane silhouettes follow spherical paths above the globe. The globe auto-rotates smoothly; pointer-based interaction is disabled and reduced-motion preferences are respected. WebGL-unavailable devices see a CSS fallback.
 
 To customize destinations, edit the `flights` array in `src/components/trade-globe.tsx`. All coordinates are decimal latitude/longitude. Additional destinations do not require new database records or API keys.
 
@@ -172,9 +172,9 @@ To customize destinations, edit the `flights` array in `src/components/trade-glo
 - Miremad (`src/app/fonts/Miremad.ttf`): homepage display title, sector and green-background page titles, major section headings and selected callouts in Persian and Arabic.
 - Dirooz (`src/app/fonts/Dirooz.ttf`): body copy and interface text.
 - English display titles: classical serif fallbacks (Georgia / Palatino / Iowan Old Style).
-- The font registrations are in `src/app/fonts.ts`, with heading rules in `src/app/globe.css`.
+- The font stacks and local `@font-face` declarations live in `src/app/globals.css`, with heading rules in `src/app/globe.css`. `scripts/sync-fonts.mjs` copies locally supplied files from `src/app/fonts/` to `public/fonts/` before development and production builds.
 
-**If you are applying the update ZIP to an existing installation, preserve the two font files already in your `src/app/fonts/` folder.** The update package does not distribute the font binaries; they are loaded from your existing installation.
+**Keep your original font files in `src/app/fonts/`.** Project archives exclude the third-party font binaries. Place `Miremad.ttf` and `Dirooz.ttf` in that folder to activate the brand fonts; a fresh checkout can still build with fallback fonts.
 
 ### Local verification
 
@@ -194,10 +194,10 @@ It currently uses seven illustrative long-haul routes with 5.4-second flight cyc
 
 The website relies on the original local display fonts at `src/app/fonts/Miremad.ttf` and `src/app/fonts/Dirooz.ttf`. When replacing the source tree, **retain your existing `src/app/fonts/` directory**. Do not delete or rename these local files.
 
-## Insight guides and photographs
+## Stone blog and photographs
 
-The editorial section is now `/en/insights/`, `/fa/insights/`, and `/ar/insights/`.
-Old `/journal/` URLs redirect on Cloudflare Pages via `public/_redirects`.
+The editorial section is now `/en/blog/`, `/fa/blog/`, and `/ar/blog/`.
+Old `/insights/` and `/journal/` URLs redirect to `/blog/` on Cloudflare Pages via `public/_redirects`.
 
 Five stone buyer guides each have English, Persian, and Arabic Markdown translations.
 Cover images use reusable Wikimedia Commons photographs, **not actual Aval Tejarat
@@ -215,7 +215,7 @@ pnpm run build
 ```
 
 This is an **optional, one-time, network-dependent** download. It writes
-`public/images/insights/*.jpg` and rewrites the new article frontmatter
+`public/images/blog/*.jpg` and rewrites the new article frontmatter
 to local image paths. Commit both the images and Markdown changes. It does not
 run automatically during `pnpm build` (CI remains offline/static).
 

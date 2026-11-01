@@ -1,31 +1,20 @@
-# Build and verification status — 2026-11-01
+# Verification status — stone-only Blog revision
 
-## Verification completed in this workspace
+- New public route: `/en/blog/`, `/fa/blog/`, `/ar/blog/`. Old `insights` and `journal` URLs redirect on Cloudflare Pages.
+- Business catalogue: natural stone, travertine, marble, granite only.
+- Published articles: 18 Markdown posts, 6 per language, all about natural stone.
+- Automated tests: **22 passed** (`node --test tests/*.test.mjs`).
+- Content validator: **18 files passed** (`node scripts/check-content.mjs`).
+- TypeScript / TSX syntax transpilation: **30 files, 0 parser diagnostics** (global TypeScript).
+- Full Next.js production build: **NOT VERIFIED**. Attempted `npm run build`; dependency installation timed out and `next` is not available in this environment (`sh: next: not found`). Syntax tests are not a substitute for `next build`.
+- Font binaries: preserved in the working folder but excluded from the deliverable; the app supports optional local fonts copied by `scripts/sync-fonts.mjs`, with fallback fonts if absent.
 
-- `node scripts/check-content.mjs`: PASS (21 articles, five new stone guides in each of three languages).
-- `node --test tests/*.test.mjs`: PASS (20 tests).
-- Global TypeScript `transpileModule` syntax pass on 30 TS/TSX source files: PASS (no parse diagnostics). **This is not TypeScript semantic checking.**
-- YAML parse with Python PyYAML for all 21 Markdown files: PASS.
-- Confirmed both original fonts are present at `src/app/fonts/Miremad.ttf` and `src/app/fonts/Dirooz.ttf`.
-- Confirmed new `/insights/` route and `/journal/` Cloudflare redirects, SEO sitemap, image credit metadata.
+Run on your machine after installing dependencies:
 
-## Production build attempt
-
-The complete `npm run build` **was attempted but could not run Next.js**: this environment does not have `node_modules` and npm registry access fails with `EAI_AGAIN` (DNS resolution unavailable). `next: not found` occurs before Next.js compilation.
-
-**A successful `pnpm run build` is NOT claimed.** On a connected machine run:
-
-```sh
+```powershell
 pnpm install
 pnpm test
 pnpm run build
-pnpm dev
 ```
 
-If a build error appears, do not deploy until corrected.
-
-## Editorial imagery
-
-New guide cover images are linked remotely from Wikimedia Commons; the ZIP includes the source and license/attribution metadata, not the photo JPEGs themselves. To download and self-host the photos on Cloudflare, run `pnpm run images:cache` on a network-connected machine, then commit the updated `content/articles/*.md` and `public/images/insights/*.jpg` before deploying. This optional command is not run by builds.
-
-Photos are editorial examples, not evidence of Iranian products or available inventory.
+The package should not be considered a build-verified release until `pnpm run build` completes.

@@ -7,7 +7,7 @@
 - [x] English/Persian/Arabic UI translations
 
 ## Phase 2 — Corporate website — implemented (build verification pending)
-- [x] Responsive landing, about, sectors, sector details, process, journal, contact
+- [x] Responsive landing, about, sectors, sector details, process, blog, contact
 - [x] RTL support and accessible navigation
 - [x] Motion design with reduced-motion support
 - [x] Article pages generated from Markdown
@@ -43,3 +43,14 @@
 - [x] Add source/data regression checks
 - [ ] Verify a full `pnpm run build` after installing new packages in a network-enabled environment
 - [ ] Visually validate interactive WebGL behavior on desktop and mobile
+
+
+## November 2026 stone-only scope clarification
+
+- [x] Replace “Insights” with **Blog / وبلاگ / المدونة** in navigation, URLs, sitemap and headings.
+- [x] Remove general non-stone blog posts; retain six natural-stone posts per language.
+- [x] Replace food/industrial sector cards with natural stone, travertine, marble and granite.
+- [x] Keep previous journal/insights URLs redirected to the new Blog paths.
+- [x] Preserve client-side WhatsApp inquiries; no database.
+- [x] Content checks, 22 regression tests and TSX syntax checks.
+- [ ] Verify `pnpm run build` in a dependency-installed environment.

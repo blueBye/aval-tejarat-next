@@ -8,9 +8,9 @@ import type { Locale } from '@/lib/types';
 type Values = {name:string;email:string;company:string;product:string;destination:string;quantity:string;message:string};
 const initial: Values = {name:'',email:'',company:'',product:'',destination:'',quantity:'',message:''};
 const headers = {
-  en: ['Hello Aval Tejarat Persian, I would like to discuss a sourcing inquiry.','Name','Email','Company','Product','Destination','Approx. quantity','Details'],
-  fa: ['سلام، می‌خواهم درباره تأمین کالا استعلام بگیرم.','نام','ایمیل','شرکت','کالا','کشور مقصد','مقدار تقریبی','توضیحات'],
-  ar: ['مرحباً، أرغب في الاستفسار عن توريد منتج.','الاسم','البريد الإلكتروني','الشركة','المنتج','بلد الوجهة','الكمية التقريبية','التفاصيل']
+  en: ['Hello Aval Tejarat Persian, I would like to inquire about natural stone.','Name','Email','Company','Stone type / finish','Destination','Approx. quantity','Details'],
+  fa: ['سلام، می‌خواهم درباره تأمین سنگ طبیعی استعلام بگیرم.','نام','ایمیل','شرکت','نوع سنگ','کشور مقصد','مقدار تقریبی','توضیحات'],
+  ar: ['مرحباً، أرغب في الاستفسار عن توريد حجر طبيعي.','الاسم','البريد الإلكتروني','الشركة','نوع الحجر','بلد الوجهة','الكمية التقريبية','التفاصيل']
 } as const;
 export function InquiryForm({locale}:{locale:Locale}){
   const [form,setForm]=useState<Values>(initial);

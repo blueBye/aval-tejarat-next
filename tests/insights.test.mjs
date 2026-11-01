@@ -19,7 +19,7 @@ test('five natural stone buyer guides exist in all three languages with licensed
   }
 });
 test('article hero image precedes clean reading column and keeps padding symmetric',()=>{
-  const article = read('src/app/(localized)/[locale]/insights/[slug]/page.tsx');
+  const article = read('src/app/(localized)/[locale]/blog/[slug]/page.tsx');
   const css=read('src/app/globals.css');
   assert.match(article,/article-hero-photo/);
   assert.match(article,/article-body-inner/);
@@ -28,12 +28,31 @@ test('article hero image precedes clean reading column and keeps padding symmetr
   assert.match(css,/\.article-body-inner\{[^}]*padding-inline:/);
   assert.match(css,/\.journal-thumb img\{object-fit:cover;padding:0\}/);
 });
-test('Insights has a canonical route and legacy journal redirects',()=>{
-  assert.ok(fs.existsSync('src/app/(localized)/[locale]/insights/page.tsx'));
+test('Blog has a canonical route and old paths redirect',()=>{
+  assert.ok(fs.existsSync('src/app/(localized)/[locale]/blog/page.tsx'));
   const rules=read('public/_redirects');
-  for (const lang of ['en','fa','ar']) assert.ok(rules.includes(`/${lang}/journal/* /${lang}/insights/:splat 301`));
+  for (const lang of ['en','fa','ar']) assert.ok(rules.includes(`/${lang}/journal/* /${lang}/blog/:splat 301`));
+  for (const lang of ['en','fa','ar']) assert.ok(rules.includes(`/${lang}/insights/* /${lang}/blog/:splat 301`));
   const nav=read('src/components/site-header.tsx');
-  assert.match(nav,/\/insights/);
+  assert.match(nav,/\/blog/);
   const sitemap=read('src/app/sitemap.ts');
-  assert.match(sitemap,/insights/);
+  assert.match(sitemap,/blog/);
+});
+
+test('only natural-stone editorial content is published',()=>{
+  const posts=fs.readdirSync(folder).filter(f=>f.endsWith('.md'));
+  assert.equal(posts.length,18);
+  for (const file of posts) {
+    const text=read(path.join(folder,file));
+    assert.match(text,/translationKey:\s*(natural-stone-checklist|stone-[a-z-]+)/);
+    assert.doesNotMatch(text,/category:\s*(Food products|محصولات غذایی|المنتجات الغذائية)/);
+  }
+  for (const lang of ['en','fa','ar']) assert.equal(posts.filter(f=>f.startsWith(`${lang}-`)).length,6);
+});
+test('site markets only natural stone, not food or industrial material sectors',()=>{
+  const i18n=read('src/lib/i18n.ts');
+  for (const term of ['food-products', 'industrial-materials', 'محصولات غذایی', 'المنتجات الغذائية']) assert.ok(!i18n.includes(term),term);
+  for (const term of ['travertine', 'marble', 'granite','natural-stone']) assert.ok(i18n.includes(`"${term}"`),term);
+  const siteHeader=read('src/components/site-header.tsx');
+  assert.match(siteHeader,/\/blog/);
 });

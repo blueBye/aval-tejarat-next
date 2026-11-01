@@ -21,12 +21,12 @@ export async function generateMetadata({params}:Props):Promise<Metadata> {
   if (!article) return {};
   const languages = Object.fromEntries((['en','fa','ar'] as Locale[]).flatMap(l => {
     const translated = translatedArticle(article,l);
-    return translated ? [[l,`/${l}/insights/${translated.slug}/`]] : [];
+    return translated ? [[l,`/${l}/blog/${translated.slug}/`]] : [];
   }));
   return {title:article.title,description:article.description,
-    alternates:{canonical:`/${locale}/insights/${slug}/`,languages},
+    alternates:{canonical:`/${locale}/blog/${slug}/`,languages},
     openGraph:{title:article.title,description:article.description,type:'article',
-      url:`${siteOrigin}/${locale}/insights/${slug}/`,publishedTime:article.date,
+      url:`${siteOrigin}/${locale}/blog/${slug}/`,publishedTime:article.date,
       images:article.cover ? [{url:article.cover,alt:article.coverAlt || article.title}] : undefined}};
 }
 export default async function ArticlePage({params}:Props) {
@@ -39,11 +39,11 @@ export default async function ArticlePage({params}:Props) {
     <section className="article-header">
       <div className="container article-detail-inner">
         <div className="article-header-copy">
-          <Link href={`/${locale}/insights/`} className="sector-back"><ArrowLeft size={16}/>{t.viewAll}</Link>
+          <Link href={`/${locale}/blog/`} className="sector-back"><ArrowLeft size={16}/>{t.viewAll}</Link>
           <div className="section-eyebrow light">{article.category}</div>
           <h1>{article.title}</h1>
           <p>{article.description}</p>
-          <div className="article-meta"><time dateTime={article.date}>{article.date}</time><span aria-hidden="true">•</span><span>{locale==='fa'?'راهنمای خریدار':locale==='ar'?'دليل المشتري':'BUYER INSIGHT'}</span></div>
+          <div className="article-meta"><time dateTime={article.date}>{article.date}</time><span aria-hidden="true">•</span><span>{locale==='fa'?'وبلاگ سنگ':locale==='ar'?'مدونة الحجر':'STONE BLOG'}</span></div>
         </div>
         <figure className="article-hero-photo">
           <img src={article.cover ?? '/illustrations/stone.svg'} alt={article.coverAlt || ''} loading="eager" decoding="async"/>
@@ -54,7 +54,7 @@ export default async function ArticlePage({params}:Props) {
     <article className="article-body" dir={locale==='en'?'ltr':'rtl'}>
       <div className="article-body-inner">
         <div className="prose" dangerouslySetInnerHTML={{__html:article.html}}/>
-        <div className="article-end-link"><Link href={`/${locale}/insights/`} className="text-link">{t.viewAll}<ArrowUpRight size={16}/></Link></div>
+        <div className="article-end-link"><Link href={`/${locale}/blog/`} className="text-link">{t.viewAll}<ArrowUpRight size={16}/></Link></div>
       </div>
     </article>
     <CtaSection locale={locale}/>

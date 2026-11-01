@@ -1,5 +1,5 @@
 export type Locale = 'en' | 'fa' | 'ar';
-export type SectorId = 'natural-stone' | 'food-products' | 'industrial-materials';
+export type SectorId = 'natural-stone' | 'travertine' | 'marble' | 'granite';
 export interface Article {
   slug: string;
   language: Locale;

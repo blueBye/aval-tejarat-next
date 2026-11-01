@@ -5,15 +5,15 @@ import { ArrowUpRight, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { copy } from "@/lib/i18n";
 import type { Locale } from "@/lib/types";
-const routes=["","/about","/sectors","/process","/insights","/contact"];
+const routes=["","/about","/sectors","/process","/blog","/contact"];
 export function SiteHeader({locale,articleSwitchMap}:{locale:Locale;articleSwitchMap:Record<string,Partial<Record<Locale,string>>>}) {
   const t=copy[locale]; const [open,setOpen]=useState(false);const pathname=usePathname()||`/${locale}`;
   const switched=(target:Locale)=>{
     const suffix=pathname.replace(/^\/(?:en|fa|ar)(?=\/|$)/,"");
-    const article=/^\/insights\/([^/]+)\/?$/.exec(suffix);
+    const article=/^\/blog\/([^/]+)\/?$/.exec(suffix);
     if(article){
       const targetSlug=articleSwitchMap[`${locale}:${article[1]}`]?.[target];
-      return targetSlug?`/${target}/insights/${targetSlug}/`:`/${target}/insights/`;
+      return targetSlug?`/${target}/blog/${targetSlug}/`:`/${target}/blog/`;
     }
     return `/${target}${suffix||'/'}`;
   };

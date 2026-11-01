@@ -116,8 +116,12 @@ test('animated route positions use an explicitly typed dynamic BufferAttribute',
   assert.doesNotMatch(source, /getAttribute\("position"\)\.setUsage\(/);
 });
 
-test('bundled local font source files are present', () => {
+test('locally supplied fonts are optional during build but synced when present', () => {
+  const script = read('scripts/sync-fonts.mjs');
+  const css = read('src/app/globals.css');
   for (const font of ['Dirooz.ttf', 'Miremad.ttf']) {
-    assert.ok(readFileSync(`src/app/fonts/${font}`).byteLength > 5000, `${font} should not be missing`);
+    assert.match(script, new RegExp(font.replace('.', '\\.')));
+    assert.ok(css.includes(`/fonts/${font}`));
   }
+  assert.match(script, /existsSync/);
 });

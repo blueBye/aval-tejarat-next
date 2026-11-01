@@ -25,5 +25,5 @@ jobs:
           test -f out/en/index.html
           test -f out/fa/index.html
           test -f out/ar/index.html
-          test -f out/en/journal/sourcing-brief/index.html
+          test -f out/en/blog/natural-stone-checklist/index.html
           test -f out/sitemap.xml
