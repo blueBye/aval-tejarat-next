@@ -104,3 +104,20 @@ test('50 percent faster smooth rotation does not recalculate stationary camera e
   assert.match(source, /globe\.quaternion\.copy\(spin\)\.multiply\(initialOrientation\)/);
   assert.equal((source.match(/globe\.setPointOfView\(camera\)/g) || []).length, 1);
 });
+
+// Three.js getAttribute() can return InterleavedBufferAttribute, which lacks setUsage().
+// Keep the concrete BufferAttribute reference when configuring animated route geometry.
+test('animated route positions use an explicitly typed dynamic BufferAttribute', () => {
+  const source = read('src/components/trade-globe.tsx');
+  assert.match(source, /const positions = new THREE\.BufferAttribute\(/);
+  assert.match(source, /positions\.setUsage\(THREE\.DynamicDrawUsage\)/);
+  assert.match(source, /new THREE\.BufferGeometry\(\)\.setAttribute\("position", positions\)/);
+  assert.match(source, /return \{ route, points, geometry, positions, line, plane/);
+  assert.doesNotMatch(source, /getAttribute\("position"\)\.setUsage\(/);
+});
+
+test('bundled local font source files are present', () => {
+  for (const font of ['Dirooz.ttf', 'Miremad.ttf']) {
+    assert.ok(readFileSync(`src/app/fonts/${font}`).byteLength > 5000, `${font} should not be missing`);
+  }
+});

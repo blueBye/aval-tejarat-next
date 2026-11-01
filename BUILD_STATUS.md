@@ -1,35 +1,31 @@
-# Build and QA status — 2026-11-01
+# Build and verification status — 2026-11-01
 
-## New globe + typography update
+## Verification completed in this workspace
 
-- `three-globe` and `three` integration implemented in a dynamically loaded client-side component.
-- Uses local static equirectangular Earth texture and a geographic Iran polygon.
-- Airplane-shaped mesh markers animate along spherical paths; globe auto-rotates and supports user controls.
-- `src/app/globe.css` applies Miremad to major RTL page and section titles.
-- Site remains a static Next.js export and uses no database or mapping API.
+- `node scripts/check-content.mjs`: PASS (21 articles, five new stone guides in each of three languages).
+- `node --test tests/*.test.mjs`: PASS (20 tests).
+- Global TypeScript `transpileModule` syntax pass on 30 TS/TSX source files: PASS (no parse diagnostics). **This is not TypeScript semantic checking.**
+- YAML parse with Python PyYAML for all 21 Markdown files: PASS.
+- Confirmed both original fonts are present at `src/app/fonts/Miremad.ttf` and `src/app/fonts/Dirooz.ttf`.
+- Confirmed new `/insights/` route and `/journal/` Cloudflare redirects, SEO sitemap, image credit metadata.
 
-## Local checks
+## Production build attempt
 
-- The new TSX files were transpile-parse-checked using TypeScript (no syntax diagnostics).
-- Iran GeoJSON polygon was checked with Shapely: valid, closed, bounds inside Iran region, containing Tehran.
-- Dependency-free globe tests and content tests can be run using `node --test tests/globe.test.mjs`.
+The complete `npm run build` **was attempted but could not run Next.js**: this environment does not have `node_modules` and npm registry access fails with `EAI_AGAIN` (DNS resolution unavailable). `next: not found` occurs before Next.js compilation.
 
-## Not verified in this workspace
+**A successful `pnpm run build` is NOT claimed.** On a connected machine run:
 
-- A full Next.js production build and browser-based WebGL visual check require installing the newly added npm packages. npm registry access is unavailable in the current workspace.
-- On Windows: `pnpm install`, then `pnpm test`, then `pnpm run build`. Deployment remains unchanged: Cloudflare Pages publishes `out/`.
+```sh
+pnpm install
+pnpm test
+pnpm run build
+pnpm dev
+```
 
-2026-11-01: Globe update: 7 routes from multiple Iranian cities, synchronized fast plane/trail animation, upright orientation, no overlays, lower-half CSS gradient fade. Tests and Markdown validation pass. Full Next.js build not run (dependencies unavailable in workspace).
+If a build error appears, do not deploy until corrected.
 
-2026-11-01: Removed obsolete single-origin `ORIGIN` reference in `trade-globe.tsx` (line 101); all route origins are now sourced from `ROUTES`. Full Next.js build not verified locally; dependencies unavailable.
+## Editorial imagery
 
-## 2026-11-01 — Long-flight and smooth-rotation iteration
+New guide cover images are linked remotely from Wikimedia Commons; the ZIP includes the source and license/attribution metadata, not the photo JPEGs themselves. To download and self-host the photos on Cloudflare, run `pnpm run images:cache` on a network-connected machine, then commit the updated `content/articles/*.md` and `public/images/insights/*.jpg` before deploying. This optional command is not run by builds.
 
-- Seven illustrated long-haul routes now leave different Iranian cities (all arcs span at least 30° of great-circle distance).
-- Each aircraft finishes its route in 5.4 seconds, with the visible line's endpoint explicitly following the plane's interpolated position.
-- Airplane icon faces the viewer and points in the projected flight direction to avoid sideways-looking aircraft on globe edges.
-- Rotation speed changed from 0.008 to 0.012 radians/second (+50%). Absolute, timestamp-derived rotation around screen-up preserves north/south upright orientation.
-- Eliminated `setPointOfView(camera)` from every animation frame; it runs only when the camera projection is initialized/resized.
-- Retained noninteractive controls, label-free globe, lower-half transparency gradient, local Earth texture, and existing font files in the working project.
-- Validation: 15 Node tests pass, six Markdown posts pass content validation, TSX parse/transpile checks pass.
-- Full Next.js build and real WebGL browser verification remain unverified because npm registry DNS/network access fails in this environment.
+Photos are editorial examples, not evidence of Iranian products or available inventory.

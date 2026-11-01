@@ -38,7 +38,7 @@ export const copy: Record<Locale,Copy> = {
     },
     processTag:"03 — HOW IT WORKS",processTitle:"A clear route from request to possibility.",processText:"Thoughtful coordination from the first specification to the next commercial decision.",
     steps:[{title:"Tell us your needs",description:"Share specifications, quantities, destination and timeline."},{title:"Explore the options",description:"We identify potential suppliers and clarify relevant details."},{title:"Verify the fit",description:"Compare samples, documentation and commercial conditions."},{title:"Coordinate next steps",description:"When feasible, move toward order and export planning."}],
-    journalTag:"04 — FIELD NOTES",journalTitle:"Trade, explained.",journalText:"Practical perspectives on sourcing, specifications and international commerce.",viewAll:"All insights",
+    journalTag:"04 — BUYER GUIDES",journalTitle:"Insights for better sourcing.",journalText:"Practical guides to natural stone, specifications and international trade.",viewAll:"All insights",
     ctaTitle:"The next opportunity starts with a conversation.",ctaText:"Tell us what you are looking for, and we will explore what information is needed to evaluate the opportunity.",ctaButton:"Send a sourcing inquiry",footerText:"Connecting international demand to potential Iranian supply, with clarity at every step.",footerLegal:"A trade name. Supply and commercial terms are subject to independent verification.",
     aboutTitle:"A more thoughtful way to source from Iran.",aboutText:"Aval Tejarat Persian is a trade name introducing independent sourcing and export-coordination services. We help buyers and potential suppliers move from initial questions to informed decisions. We do not promise inventory, manufacturing capacity or shipment eligibility without verification.",
     aboutPoints:[{title:"Clarity before commitment",description:"Technical and commercial requirements are clarified before offers are presented."},{title:"A buyer-led approach",description:"Your product brief, destination and priorities shape the investigation."},{title:"Commercial practicality",description:"We consider logistics, documentation and market rules alongside product fit."}],
@@ -48,7 +48,7 @@ export const copy: Record<Locale,Copy> = {
     articleEmpty:"New insights are being prepared. Check back soon.",readStory:"Read article",sectorDetailsTitle:"What helps us assess your request",sectorDetails:["Material or product specifications","Dimensions, quality standards and packaging","Expected quantity and frequency","Destination and preferred delivery terms","Required certificates or test documentation","Sampling and inspection expectations"]
   },
   fa: {
-    brand:"اول",subtitle:"تجارت پرشین",nav:["خانه","درباره ما","حوزه‌ها","فرآیند همکاری","مقالات","تماس با ما"],getInTouch:"ثبت درخواست تأمین",
+    brand:"اول",subtitle:"تجارت پرشین",nav:["خانه","درباره ما","حوزه‌ها","فرآیند همکاری","راهنماها","تماس با ما"],getInTouch:"ثبت درخواست تأمین",
     eyebrow:"تأمین بین‌المللی · ایران",hero1:"از ایران،",heroAccent:"با فرصت‌های تازه.",hero2:"به بازارهای جهان.",
     heroText:"خدمات بررسی تأمین کالا و هماهنگی صادرات برای خریداران بین‌المللی. کمک می‌کنیم گزینه‌های موجود را بررسی کنید، جزئیات را روشن کنید و با آگاهی بیشتری تصمیم بگیرید.",
     primaryCTA:"نیازتان را مطرح کنید",secondaryCTA:"حوزه‌های فعالیت",heroSmall:["تأمین بر اساس نیاز خریدار","گفت‌وگوی تجاری شفاف","تأیید موردی شرایط"],
@@ -62,7 +62,7 @@ export const copy: Record<Locale,Copy> = {
     },
     processTag:"۰۳ — روش همکاری",processTitle:"مسیری روشن از درخواست تا تصمیم.",processText:"هماهنگی دقیق از اولین نیازمندی تا گام تجاری بعدی.",
     steps:[{title:"شرح نیازمندی",description:"مشخصات، حجم، مقصد و زمان موردنظر را بیان کنید."},{title:"بررسی گزینه‌ها",description:"تأمین‌کنندگان احتمالی و شرایط اولیه بررسی می‌شوند."},{title:"ارزیابی تناسب",description:"نمونه‌ها، مدارک و شرایط تجاری مقایسه می‌شوند."},{title:"هماهنگی مراحل بعد",description:"در صورت امکان، سفارش و برنامه‌ریزی صادرات دنبال می‌شود."}],
-    journalTag:"۰۴ — دانستنی‌های تجارت",journalTitle:"تجارت، ساده و روشن.",journalText:"دیدگاه‌های کاربردی درباره تأمین کالا و تجارت بین‌المللی.",viewAll:"همه مقالات",
+    journalTag:"۰۴ — راهنمای خریداران",journalTitle:"راهنماهای کاربردی تأمین کالا",journalText:"راهنماهای تخصصی درباره انتخاب سنگ طبیعی، مشخصات فنی و تجارت بین‌المللی.",viewAll:"همه مقالات",
     ctaTitle:"فرصت بعدی با یک گفت‌وگو آغاز می‌شود.",ctaText:"بگویید به دنبال چه کالایی هستید تا بررسی کنیم برای ارزیابی فرصت تأمین چه اطلاعاتی لازم است.",ctaButton:"ثبت درخواست تأمین",footerText:"پیوند نیاز بازارهای جهانی با ظرفیت‌های احتمالی تأمین از ایران، با تأکید بر شفافیت.",footerLegal:"نام تجاری؛ موجودی، امکان صادرات و شرایط تجاری نیازمند بررسی و تأیید است.",
     aboutTitle:"نگاهی دقیق‌تر به تأمین کالا از ایران.",aboutText:"اول تجارت پرشین نام تجاری خدمات مستقل تأمین کالا و هماهنگی صادرات است. ما به خریداران کمک می‌کنیم از پرسش‌های اولیه به تصمیم‌گیری آگاهانه برسند. هیچ موجودی، ظرفیت تولید یا امکان حملی بدون بررسی قطعی اعلام نمی‌شود.",
     aboutPoints:[{title:"شفافیت پیش از تعهد",description:"پیش از ارائه پیشنهاد، نیازهای فنی و تجاری روشن می‌شوند."},{title:"شروع از نیاز خریدار",description:"نوع کالا، مقصد و اولویت‌های شما مسیر بررسی را تعیین می‌کند."},{title:"نگاه واقع‌بینانه",description:"لجستیک، مدارک و مقررات در کنار کیفیت محصول سنجیده می‌شوند."}],
@@ -72,7 +72,7 @@ export const copy: Record<Locale,Copy> = {
     articleEmpty:"مقالات جدید به‌زودی منتشر می‌شوند.",readStory:"مطالعه مقاله",sectorDetailsTitle:"اطلاعات مفید برای بررسی درخواست",sectorDetails:["مشخصات دقیق کالا یا مواد","ابعاد، استاندارد کیفیت و بسته‌بندی","حجم و تناوب سفارش","مقصد و شرایط تحویل ترجیحی","گواهی‌ها و مدارک آزمون","انتظارها درباره نمونه و بازرسی"]
   },
   ar: {
-    brand:"أول",subtitle:"تجارت پرشين",nav:["الرئيسية","من نحن","القطاعات","آلية العمل","المقالات","تواصل معنا"],getInTouch:"طلب عرض توريد",
+    brand:"أول",subtitle:"تجارت پرشين",nav:["الرئيسية","من نحن","القطاعات","آلية العمل","الأدلة","تواصل معنا"],getInTouch:"طلب عرض توريد",
     eyebrow:"التوريد الدولي · إيران",hero1:"من إيران،",heroAccent:"بفرص جديدة.",hero2:"إلى أسواق العالم.",
     heroText:"خدمات تنسيق التوريد والتصدير للمشترين الدوليين. نساعدك في استكشاف خيارات المنتجات الإيرانية وتوضيح المتطلبات واتخاذ قرارات تجارية أكثر ثقة.",
     primaryCTA:"أخبرنا بما تحتاجه",secondaryCTA:"استكشف القطاعات",heroSmall:["التوريد وفق احتياجات المشتري","تواصل تجاري واضح","التحقق لكل طلب"],
@@ -86,7 +86,7 @@ export const copy: Record<Locale,Copy> = {
     },
     processTag:"٠٣ — كيف نعمل",processTitle:"مسار واضح من الطلب إلى القرار.",processText:"تنسيق مدروس من المواصفات الأولى إلى الخطوة التجارية التالية.",
     steps:[{title:"شارك متطلباتك",description:"أرسل المواصفات والكميات والوجهة والوقت المتوقع."},{title:"استكشف الخيارات",description:"نحدد موردين محتملين ونوضح التفاصيل الضرورية."},{title:"تحقق من الملاءمة",description:"نقارن العينات والوثائق والشروط التجارية."},{title:"نسّق الخطوات التالية",description:"عند الإمكان، ننتقل إلى التخطيط للطلب والتصدير."}],
-    journalTag:"٠٤ — رؤى تجارية",journalTitle:"التجارة بوضوح.",journalText:"رؤى عملية حول التوريد والمواصفات والتجارة الدولية.",viewAll:"جميع المقالات",
+    journalTag:"٠٤ — أدلة المشترين",journalTitle:"أدلة عملية للتوريد",journalText:"مقالات متخصصة حول الحجر الطبيعي والمواصفات الفنية والتجارة الدولية.",viewAll:"جميع المقالات",
     ctaTitle:"تبدأ الفرصة القادمة بمحادثة.",ctaText:"أخبرنا بما تبحث عنه لنحدد المعلومات المطلوبة لتقييم فرص التوريد.",ctaButton:"إرسال استفسار توريد",footerText:"ربط الطلب الدولي بفرص التوريد المحتملة في إيران بوضوح في كل خطوة.",footerLegal:"اسم تجاري. يخضع التوفر والشحن والشروط التجارية للتحقق المستقل.",
     aboutTitle:"نهج أكثر وعياً للتوريد من إيران.",aboutText:"أول تجارت پرشين اسم تجاري لخدمات التوريد المستقل وتنسيق الصادرات. نساعد المشترين في الانتقال من الأسئلة الأولية إلى القرارات المدروسة. لا نضمن المخزون أو القدرة الإنتاجية أو أهلية الشحن قبل التحقق.",
     aboutPoints:[{title:"وضوح قبل الالتزام",description:"نوضح المتطلبات الفنية والتجارية قبل تقديم العروض."},{title:"المشتري أولاً",description:"تحدد مواصفاتك ووجهتك أولويات البحث."},{title:"واقع تجاري مدروس",description:"نوازن بين المنتج والخدمات اللوجستية والوثائق والقوانين."}],

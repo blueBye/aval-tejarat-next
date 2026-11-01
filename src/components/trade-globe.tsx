@@ -139,11 +139,15 @@ export function TradeGlobe() {
           const end = geoVector(route.endLat, route.endLng).normalize();
           const points = Array.from({ length: ROUTE_SEGMENTS + 1 }, (_, index) =>
             pointOnArc(start, end, index / ROUTE_SEGMENTS));
-          const geometry = new THREE.BufferGeometry().setFromPoints(points);
-          const position = geometry.getAttribute("position");
-          if (position instanceof THREE.BufferAttribute) {
-            position.setUsage(THREE.DynamicDrawUsage);
-          }
+          // Create the dynamic buffer explicitly: getAttribute() has a union
+          // return type that also permits InterleavedBufferAttribute, which
+          // does not expose setUsage() in Three.js typings.
+          const positions = new THREE.BufferAttribute(
+            new Float32Array(points.flatMap(point => [point.x, point.y, point.z])),
+            3,
+          );
+          positions.setUsage(THREE.DynamicDrawUsage);
+          const geometry = new THREE.BufferGeometry().setAttribute("position", positions);
           const line = new THREE.Line(geometry, activeMaterial);
           globe.add(line);
           const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
@@ -151,7 +155,7 @@ export function TradeGlobe() {
           const plane = new THREE.Group();
           plane.add(planeMesh);
           globe.add(plane);
-          return { route, points, geometry, line, plane, partialIndex: -1 };
+          return { route, points, geometry, positions, line, plane, partialIndex: -1 };
         });
         // A billboard faces the viewer, while its nose follows the *projected*
         // tangent to the route. This prevents edge-of-globe aircraft looking sideways.
@@ -211,7 +215,7 @@ export function TradeGlobe() {
           inverseGlobe.copy(globe.quaternion).invert();
 
           flightPaths.forEach(flight => {
-            const { route, points, line, plane, geometry } = flight;
+            const { route, points, line, plane, positions } = flight;
             const phase = reduceMotion ? 0.7 : (elapsedMs / FLIGHT_DURATION_MS + route.phase) % 1;
             const continuousHead = Math.max(2, Math.min(ROUTE_SEGMENTS - 0.0001, phase * ROUTE_SEGMENTS));
             const head = Math.floor(continuousHead);
@@ -219,7 +223,6 @@ export function TradeGlobe() {
             // Interpolate between samples so planes glide continuously even at 120Hz.
             tip.copy(points[head]).lerp(points[head + 1], continuousHead - head);
             const partialIndex = head + 1;
-            const positions = geometry.getAttribute("position") as InstanceType<typeof THREE.BufferAttribute>;
             if (flight.partialIndex !== -1 && flight.partialIndex !== partialIndex) {
               const original = points[flight.partialIndex];
               positions.setXYZ(flight.partialIndex, original.x, original.y, original.z);

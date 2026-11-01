@@ -1,1 +1,4 @@
 / /en/ 302
+/en/journal/* /en/insights/:splat 301
+/fa/journal/* /fa/insights/:splat 301
+/ar/journal/* /ar/insights/:splat 301

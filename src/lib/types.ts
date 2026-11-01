@@ -9,6 +9,9 @@ export interface Article {
   date: string;
   category: string;
   cover?: string;
+  coverAlt?: string;
+  coverCredit?: string;
+  coverSource?: string;
   featured: boolean;
   body: string;
   html: string;

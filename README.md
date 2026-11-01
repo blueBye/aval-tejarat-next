@@ -193,3 +193,34 @@ The globe component lives in `src/components/trade-globe.tsx`.
 It currently uses seven illustrative long-haul routes with 5.4-second flight cycles, camera-facing plane icons, and 50% faster automatic rotation than the previous revision. The airplane and the leading endpoint of its golden arc share the same interpolated position; globe interaction stays disabled. The lower hemisphere gradient fade is controlled by `src/app/globe.css`.
 
 The website relies on the original local display fonts at `src/app/fonts/Miremad.ttf` and `src/app/fonts/Dirooz.ttf`. When replacing the source tree, **retain your existing `src/app/fonts/` directory**. Do not delete or rename these local files.
+
+## Insight guides and photographs
+
+The editorial section is now `/en/insights/`, `/fa/insights/`, and `/ar/insights/`.
+Old `/journal/` URLs redirect on Cloudflare Pages via `public/_redirects`.
+
+Five stone buyer guides each have English, Persian, and Arabic Markdown translations.
+Cover images use reusable Wikimedia Commons photographs, **not actual Aval Tejarat
+Persian inventory or Iranian supply documentation**. The URL, photographer,
+license and attribution are included in the frontmatter of each post and
+`content/IMAGE_CREDITS.json`. The default covers are served from Wikimedia
+Commons and require image access in a visitor's browser.
+
+To serve images directly from your Cloudflare Pages deployment instead:
+
+```sh
+pnpm run images:cache
+pnpm run content:check
+pnpm run build
+```
+
+This is an **optional, one-time, network-dependent** download. It writes
+`public/images/insights/*.jpg` and rewrites the new article frontmatter
+to local image paths. Commit both the images and Markdown changes. It does not
+run automatically during `pnpm build` (CI remains offline/static).
+
+Images use photographers' open licenses. Keep visible attribution for the
+CC BY-SA licensed photographs, including links to the image information pages.
+
+The reading layout uses `padding-inline` instead of direction-specific
+left/right paddings; it applies evenly to all languages.

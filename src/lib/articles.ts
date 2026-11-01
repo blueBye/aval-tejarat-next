@@ -38,6 +38,9 @@ export function allArticles(): Article[] {
       translationKey: requireText(data.translationKey, 'translationKey', filename),
       category: requireText(data.category, 'category', filename),
       date: dateValue, cover: typeof data.cover === 'string' ? data.cover : undefined,
+      coverAlt: typeof data.coverAlt === 'string' ? data.coverAlt : undefined,
+      coverCredit: typeof data.coverCredit === 'string' ? data.coverCredit : undefined,
+      coverSource: typeof data.coverSource === 'string' ? data.coverSource : undefined,
       featured: data.featured === true, body: content, html,
     });
   }
